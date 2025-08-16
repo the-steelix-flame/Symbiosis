@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Note the updated path
+import { useAuth } from '../contexts/AuthContext';
 
-// Basic inline styles for the navbar
+// ... (styles remain the same)
 const navStyle = { 
   display: 'flex', 
   justifyContent: 'space-between', 
@@ -12,21 +12,18 @@ const navStyle = {
   borderBottom: '1px solid #e0e0e0',
   boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
 };
-
 const linkStyle = { 
   textDecoration: 'none', 
   color: '#333', 
   margin: '0 15px',
   fontWeight: '500'
 };
-
 const brandStyle = { 
   ...linkStyle, 
   fontWeight: 'bold',
   fontSize: '1.5rem',
   color: '#007bff'
 };
-
 const buttonStyle = {
   border: 'none',
   background: 'transparent',
@@ -37,9 +34,16 @@ const buttonStyle = {
   padding: '0',
   margin: '0 15px'
 };
+// --- NEW: Style for the welcome message ---
+const welcomeStyle = {
+  marginRight: '20px',
+  color: '#555',
+  fontWeight: 'bold'
+};
 
 export default function Navbar() {
-  const { currentUser, logout } = useAuth();
+  // --- UPDATED: Get userProfile from the context ---
+  const { currentUser, userProfile, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -56,12 +60,16 @@ export default function Navbar() {
       <div>
         <Link to="/" style={brandStyle}>EcoSynth</Link>
       </div>
-      <div>
-        {/* This is the core logic: It checks if a user is logged in. */}
+      <div style={{display: 'flex', alignItems: 'center'}}>
         {currentUser ? (
           <>
+            {/* --- NEW: Personalized Welcome Message --- */}
+            <span style={welcomeStyle}>
+              Welcome, {userProfile ? userProfile.name : 'User'}
+            </span>
             <Link to="/dashboard" style={linkStyle}>My War Room</Link>
-            <Link to="/profile" style={linkStyle}>Profile</Link> {/* <-- ADD THIS LINE */}
+            <Link to="/submit-report" style={linkStyle}>Submit Report</Link>
+            <Link to="/profile" style={linkStyle}>Profile</Link>
             <button onClick={handleLogout} style={buttonStyle}>
               Log Out
             </button>

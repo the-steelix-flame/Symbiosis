@@ -11,22 +11,30 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [currentUserRole, setCurrentUserRole] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  // --- THIS WAS MISSING. WE ARE ADDING IT BACK. ---
+  const [currentUserRole, setCurrentUserRole] = useState(null); 
   const [loading, setLoading] = useState(true);
 
-  async function signup(email, password, role) {
+  async function signup(email, password, role, name, phoneNo) {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    // Create a user document in Firestore with the selected role
-    await setDoc(doc(db, "users", user.uid), {
+    
+    const profileData = {
       uid: user.uid,
+      name: name,
+      phoneNo: phoneNo || '',
       email: user.email,
-      role: role, // e.g., 'gov', 'ngo'
+      role: role,
+      bio: '',
+      skills: [],
       createdAt: new Date(),
-      skills: []
-    });
-    // Manually set the role for the new user session
-    setCurrentUserRole(role);
+    };
+    await setDoc(doc(db, "users", user.uid), profileData);
+    
+    setUserProfile(profileData);
+    // --- THIS WAS MISSING. SET THE ROLE ON SIGNUP. ---
+    setCurrentUserRole(role); 
     return userCredential;
   }
 
@@ -42,24 +50,28 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        // Fetch the user's role from Firestore when their auth state changes
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          setCurrentUserRole(userDocSnap.data().role);
+          const profileData = userDocSnap.data();
+          setUserProfile(profileData);
+          // --- THIS WAS MISSING. SET THE ROLE ON LOGIN. ---
+          setCurrentUserRole(profileData.role); 
         }
       } else {
+        setUserProfile(null);
+        // --- THIS WAS MISSING. CLEAR THE ROLE ON LOGOUT. ---
         setCurrentUserRole(null);
       }
       setLoading(false);
     });
-
     return unsubscribe;
   }, []);
 
   const value = {
     currentUser,
-    currentUserRole,
+    userProfile,
+    currentUserRole, // --- THIS WAS MISSING. EXPORT THE ROLE. ---
     signup,
     login,
     logout
