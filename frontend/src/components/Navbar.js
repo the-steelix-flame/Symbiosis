@@ -1,4 +1,5 @@
 import React from 'react';
+// This one line imports everything you need
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -42,46 +43,42 @@ const welcomeStyle = {
 };
 
 export default function Navbar() {
-  // --- UPDATED: Get userProfile from the context ---
-  const { currentUser, userProfile, logout } = useAuth();
-  const navigate = useNavigate();
+    const { currentUser, logout } = useAuth();
+    const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error("Failed to log out", error);
-    }
-  };
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+        } catch (error) {
+            console.error("Failed to log out", error);
+        }
+    };
 
-  return (
-    <nav style={navStyle}>
-      <div>
-        <Link to="/" style={brandStyle}> Symbiosis </Link>
-      </div>
-      <div style={{display: 'flex', alignItems: 'center'}}>
-        {currentUser ? (
-          <>
-            {/* --- NEW: Personalized Welcome Message --- */}
-            <span style={welcomeStyle}>
-              Welcome, {userProfile ? userProfile.name : 'User'}
-            </span>
-            <Link to="/dashboard" style={linkStyle}>My War Room</Link>
-            <Link to="/submit-report" style={linkStyle}>Submit Report</Link>
-            <Link to="/profile" style={linkStyle}>Profile</Link>
-            <button onClick={handleLogout} style={buttonStyle}>
-              Log Out
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" style={linkStyle}>Login</Link>
-            <Link to="/signup" style={linkStyle}>Sign Up</Link>
-          </>
-        )}
-      </div>
-    </nav>
-  );
+    // Using a more structured JSX for the navbar
+    return (
+        <nav style={{ background: '#333', padding: '10px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="nav-logo">
+                <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '24px', fontWeight: 'bold' }}> Symbiosis </Link>
+            </div>
+            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', gap: '20px' }}>
+                {currentUser ? (
+                    <>
+                        <li><Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link></li>
+                        <li><Link to="/threat-radar" style={{ color: 'white', textDecoration: 'none' }}>Threat Radar</Link></li>
+                        <li><Link to="/submit-report" style={{ color: 'white', textDecoration: 'none' }}>Submit Report</Link></li>
+                        <li><Link to="/data-feed" style={{ color: 'white', textDecoration: 'none' }}>Data Feed</Link></li>
+                        <li><Link to="/profile" style={{ color: 'white', textDecoration: 'none' }}>Profile</Link></li>
+                        <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '16px' }}>Log Out</button></li>
+                    </>
+                ) : (
+                    <>
+                        <li><Link to="/signup" style={{ color: 'white', textDecoration: 'none' }}>Sign Up</Link></li>
+                        <li><Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>Log In</Link></li>
+                    </>
+                )}
+            </ul>
+        </nav>
+    );
 }
 
