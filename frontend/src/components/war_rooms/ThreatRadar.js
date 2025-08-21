@@ -44,6 +44,16 @@ const themes = {
     }
 };
 
+const Legend = () => (
+    <div className="legend">
+        <h4>Legend</h4>
+        <div><img src="/icons/leaf.png" alt="deforestation" /><span>Deforestation</span></div>
+        <div><img src="/icons/plastic.png" alt="plastic waste" /><span>Plastic Waste</span></div>
+        <div><img src="/icons/coral.png" alt="coral bleaching" /><span>Coral Bleaching</span></div>
+        <div><img src="/icons/prediction.png" alt="prediction" /><span>AI Prediction</span></div>
+    </div>
+);
+
 const MapEvents = ({ onViewportChange, onMapClick }) => {
     const map = useMapEvents({
         moveend: () => onViewportChange(map.getCenter()),
@@ -162,7 +172,7 @@ export default function ThreatRadar() {
                         ><Popup>{prediction.title}</Popup></Marker>
                     )}
                 </MapContainer>
-                
+                <Legend />
                 {/* The dashboard is now rendered based on the new visibility variable */}
                 {isDashboardVisible && (
                     <ThreatDashboard 

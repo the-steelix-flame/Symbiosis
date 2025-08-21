@@ -1,84 +1,85 @@
 import React from 'react';
-// This one line imports everything you need
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-// ... (styles remain the same)
-const navStyle = { 
-  display: 'flex', 
-  justifyContent: 'space-between', 
-  alignItems: 'center',
-  padding: '1rem 2rem', 
-  background: '#fff', 
-  borderBottom: '1px solid #e0e0e0',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-};
-const linkStyle = { 
-  textDecoration: 'none', 
-  color: '#333', 
-  margin: '0 15px',
-  fontWeight: '500'
-};
-const brandStyle = { 
-  ...linkStyle, 
-  fontWeight: 'bold',
-  fontSize: '1.5rem',
-  color: '#007bff'
-};
-const buttonStyle = {
-  border: 'none',
-  background: 'transparent',
-  color: '#007bff',
-  cursor: 'pointer',
-  fontSize: '1rem',
-  fontWeight: '500',
-  padding: '0',
-  margin: '0 15px'
-};
-// --- NEW: Style for the welcome message ---
-const welcomeStyle = {
-  marginRight: '20px',
-  color: '#555',
-  fontWeight: 'bold'
-};
-
 export default function Navbar() {
-    const { currentUser, logout } = useAuth();
-    const navigate = useNavigate();
+  const { currentUser, currentUserData, logout } = useAuth();
+  const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        try {
-            await logout();
-            navigate('/login');
-        } catch (error) {
-            console.error("Failed to log out", error);
-        }
-    };
+  // STYLES (now being used below)
+  const navStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 2rem',
+    backgroundColor: '#2c3e50',
+    color: 'white',
+  };
 
-    // Using a more structured JSX for the navbar
-    return (
-        <nav style={{ background: '#333', padding: '10px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="nav-logo">
-                <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '24px', fontWeight: 'bold' }}> Symbiosis </Link>
-            </div>
-            <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', gap: '20px' }}>
-                {currentUser ? (
-                    <>
-                        <li><Link to="/dashboard" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link></li>
-                        <li><Link to="/threat-radar" style={{ color: 'white', textDecoration: 'none' }}>Threat Radar</Link></li>
-                        <li><Link to="/submit-report" style={{ color: 'white', textDecoration: 'none' }}>Submit Report</Link></li>
-                        <li><Link to="/data-feed" style={{ color: 'white', textDecoration: 'none' }}>Data Feed</Link></li>
-                        <li><Link to="/profile" style={{ color: 'white', textDecoration: 'none' }}>Profile</Link></li>
-                        <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '16px' }}>Log Out</button></li>
-                    </>
-                ) : (
-                    <>
-                        <li><Link to="/signup" style={{ color: 'white', textDecoration: 'none' }}>Sign Up</Link></li>
-                        <li><Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>Log In</Link></li>
-                    </>
-                )}
-            </ul>
-        </nav>
-    );
+  const navLinksStyle = {
+    listStyle: 'none',
+    display: 'flex',
+    gap: '20px',
+    alignItems: 'center',
+  };
+
+  const linkStyle = {
+    color: 'white',
+    textDecoration: 'none',
+    fontSize: '16px',
+  };
+  
+  const brandStyle = {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+  };
+  
+  const buttonStyle = {
+    ...linkStyle,
+    backgroundColor: 'transparent',
+    border: '1px solid white',
+    padding: '8px 12px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  };
+  
+  const welcomeStyle = {
+    color: '#ecf0f1',
+    marginRight: '15px',
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      console.error("Failed to log out", error);
+    }
+  };
+
+  return (
+    <nav style={navStyle}>
+      <Link to="/" style={{ ...linkStyle, ...brandStyle }}>
+        EcoSynth
+      </Link>
+      <ul style={navLinksStyle}>
+        {currentUser ? (
+          <>
+            <li style={welcomeStyle}>Welcome, {currentUserData?.name || currentUser.email}</li>
+            <li><Link to="/dashboard" style={linkStyle}>Dashboard</Link></li>
+            <li><Link to="/threat-radar" style={linkStyle}>Threat Radar</Link></li>
+            <li><Link to="/submit-report" style={linkStyle}>Submit Report</Link></li>
+            <li><Link to="/data-feed" style={linkStyle}>Data Feed</Link></li>
+            <li><Link to="/profile" style={linkStyle}>Profile</Link></li>
+            <li><button onClick={handleLogout} style={buttonStyle}>Log Out</button></li>
+          </>
+        ) : (
+          <>
+            <li><Link to="/signup" style={linkStyle}>Sign Up</Link></li>
+            <li><Link to="/login" style={linkStyle}>Log In</Link></li>
+          </>
+        )}
+      </ul>
+    </nav>
+  );
 }
-

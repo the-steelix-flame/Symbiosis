@@ -11,9 +11,13 @@ const firebaseConfig = {
   messagingSenderId: "314791917034",
   appId: "1:314791917034:web:47c5aae053aba796486e93"
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Export all the services you need individually
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export { auth, db };
+
+// DO NOT add another export statement here. The ones above are sufficient.
