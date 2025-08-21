@@ -58,7 +58,7 @@ export default function Navbar() {
   return (
     <nav style={navStyle}>
       <div>
-        <Link to="/" style={brandStyle}>EcoSynth</Link>
+        <Link to="/" style={brandStyle}> Symbiosis </Link>
       </div>
       <div style={{display: 'flex', alignItems: 'center'}}>
         {currentUser ? (
@@ -84,3 +84,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
