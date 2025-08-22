@@ -1,4 +1,5 @@
 import React from 'react';
+// This one line imports everything you need
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -48,14 +49,14 @@ export default function Navbar() {
     marginRight: '15px',
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error("Failed to log out", error);
-    }
-  };
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+        } catch (error) {
+            console.error("Failed to log out", error);
+        }
+    };
 
   return (
     <nav style={navStyle}>
@@ -68,7 +69,7 @@ export default function Navbar() {
             <li style={welcomeStyle}>Welcome, {currentUserData?.name || currentUser.email}</li>
             <li><Link to="/dashboard" style={linkStyle}>Dashboard</Link></li>
             <li><Link to="/threat-radar" style={linkStyle}>Threat Radar</Link></li>
-            <li><Link to="/submit-report" style={linkStyle}>Submit Report</Link></li>
+            <li><Link to="/eco-uploads" style={linkStyle}>Eco-Uploads</Link></li>
             <li><Link to="/data-feed" style={linkStyle}>Data Feed</Link></li>
             <li><Link to="/profile" style={linkStyle}>Profile</Link></li>
             <li><button onClick={handleLogout} style={buttonStyle}>Log Out</button></li>

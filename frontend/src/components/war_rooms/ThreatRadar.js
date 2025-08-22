@@ -5,7 +5,7 @@ import './ThreatRadar.css';
 import './ThreatDashboard.css';
 import ThreatDashboard from './ThreatDashboard';
 
-// --- (customIcons and themes objects remain the same) ---
+// --- ICONS (Complete with all prediction types) ---
 const customIcons = {
     deforestation: new L.Icon({
         iconUrl: '/icons/leaf.png',
@@ -19,7 +19,22 @@ const customIcons = {
         iconUrl: '/icons/coral.png',
         iconSize: [35, 35], iconAnchor: [17, 35], popupAnchor: [0, -35]
     }),
+    // AI Predictions (using the same pulsating animation for all)
     predicted_deforestation: new L.Icon({
+        iconUrl: '/icons/prediction.png',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38],
+        className: 'prediction-icon'
+    }),
+    predicted_plastic: new L.Icon({
+        iconUrl: '/icons/prediction.png',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38],
+        className: 'prediction-icon'
+    }),
+    predicted_coral: new L.Icon({
         iconUrl: '/icons/prediction.png',
         iconSize: [38, 38],
         iconAnchor: [19, 38],
@@ -47,9 +62,7 @@ const themes = {
 const Legend = () => (
     <div className="legend">
         <h4>Legend</h4>
-        <div><img src="/icons/leaf.png" alt="deforestation" /><span>Deforestation</span></div>
-        <div><img src="/icons/plastic.png" alt="plastic waste" /><span>Plastic Waste</span></div>
-        <div><img src="/icons/coral.png" alt="coral bleaching" /><span>Coral Bleaching</span></div>
+        <div><img src="/icons/leaf.png" alt="report" /><span>Validated Report</span></div>
         <div><img src="/icons/prediction.png" alt="prediction" /><span>AI Prediction</span></div>
     </div>
 );
@@ -65,7 +78,7 @@ const MapEvents = ({ onViewportChange, onMapClick }) => {
 
 export default function ThreatRadar() {
     const [threats, setThreats] = useState([]);
-    const [prediction, setPrediction] = useState(null);
+    const [predictions, setPredictions] = useState([]); // A single array for all prediction types
     const [loading, setLoading] = useState(true);
     const [selectedThreat, setSelectedThreat] = useState(null);
     const [regionalWeather, setRegionalWeather] = useState(null);
@@ -81,23 +94,36 @@ export default function ThreatRadar() {
     ), [OPENWEATHER_API_KEY]);
 
     useEffect(() => {
-        const fetchInitialData = async () => {
-             try {
-                const [threatsResponse, predictionResponse] = await Promise.all([
+        const fetchAllData = async () => {
+            setLoading(true);
+            try {
+                // Fetch all data sources in parallel for maximum speed
+                const responses = await Promise.all([
                     fetch('http://localhost:8000/api/threats'),
-                    fetch('http://localhost:8000/api/predictions/deforestation')
+                    fetch('http://localhost:8000/api/predictions/deforestation'),
+                    fetch('http://localhost:8000/api/predictions/plastic'),
+                    fetch('http://localhost:8000/api/predictions/coral')
                 ]);
-                const threatsData = await threatsResponse.json();
-                const predictionData = await predictionResponse.json();
-                setThreats(threatsData);
-                setPrediction(predictionData);
+
+                // Process the real threat data
+                if (responses[0].ok) {
+                    const threatsData = await responses[0].json();
+                    setThreats(threatsData);
+                }
+
+                // Process all prediction data, filtering out any that failed
+                const predictionResults = await Promise.all(
+                    responses.slice(1).map(res => res.ok ? res.json() : null)
+                );
+                setPredictions(predictionResults.filter(p => p !== null));
+
             } catch (error) {
-                console.error("Failed to fetch initial data:", error);
+                console.error("Failed to fetch map data:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchInitialData();
+        fetchAllData();
     }, []);
 
     const handleViewportChange = async (center) => {
@@ -120,15 +146,12 @@ export default function ThreatRadar() {
     const handleMarkerClick = (threat) => {
         setSelectedThreat(threat);
     };
-
-    // --- KEY FIX IS HERE ---
-    // This function now resets BOTH states, ensuring the dashboard always closes.
+    
     const closeDashboard = () => {
         setSelectedThreat(null);
-        setRegionalWeather(null); // This ensures the weather view also closes.
+        setRegionalWeather(null);
     };
     
-    // A new variable to determine if the dashboard should be shown at all.
     const isDashboardVisible = selectedThreat || regionalWeather;
 
     if (loading) return <p>Loading Threat Radar...</p>;
@@ -155,6 +178,7 @@ export default function ThreatRadar() {
                     
                     <MapEvents onViewportChange={handleViewportChange} onMapClick={handleMapClick} />
                     
+                    {/* Render markers for validated reports */}
                     {threats.map(threat => (
                         <Marker
                             key={threat.id}
@@ -164,16 +188,19 @@ export default function ThreatRadar() {
                         ><Popup>{threat.title}</Popup></Marker>
                     ))}
 
-                    {prediction && (
+                    {/* Render markers for ALL AI predictions */}
+                    {predictions.map((pred, index) => (
                         <Marker
-                            position={[prediction.lat, prediction.lng]}
-                            icon={getIcon(prediction.type)}
-                            eventHandlers={{ click: () => handleMarkerClick(prediction) }}
-                        ><Popup>{prediction.title}</Popup></Marker>
-                    )}
+                            key={`pred-${index}`}
+                            position={[pred.lat, pred.lng]}
+                            icon={getIcon(pred.type)}
+                            eventHandlers={{ click: () => handleMarkerClick(pred) }}
+                        ><Popup>{pred.title}</Popup></Marker>
+                    ))}
                 </MapContainer>
+                
                 <Legend />
-                {/* The dashboard is now rendered based on the new visibility variable */}
+
                 {isDashboardVisible && (
                     <ThreatDashboard 
                         threat={selectedThreat} 

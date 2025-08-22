@@ -14,7 +14,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage'; 
 import ProfilePage from './pages/ProfilePage';
 import ThreatRadarPage from './pages/ThreatRadarPage';
-import SubmitReportPage from './pages/SubmitReportPage'; // This import is likely already here
+import EcoUploadsPage from './pages/EcoUploadsPage'; // This import is likely already here
 import DataFeedPage from './pages/DataFeedPage';
 
 function App() {
@@ -44,10 +44,10 @@ function App() {
 
           {/* THIS IS THE MISSING PART 👇 */}
           <Route
-            path="/submit-report"
+            path="/eco-uploads" // Change this path
             element={
               <ProtectedRoute>
-                <SubmitReportPage />
+                <EcoUploadsPage />
               </ProtectedRoute>
             }
           />

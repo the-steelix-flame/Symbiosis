@@ -1,67 +1,71 @@
-// Import the 'db' object you configured in your frontend's firebase.js
-// For the backend, you'd typically use the Firebase Admin SDK, but for simplicity, we'll assume a similar setup.
-// NOTE: For a real production app, use Firebase Admin SDK for backend operations.
-const { db } = require('../../frontend/src/services/firebase'); // Adjust path if needed
-const { collection, addDoc, getDocs, query, orderBy } = require('firebase/firestore');
+const { spawn } = require('child_process');
+const { db } = require('../../config/firebaseAdmin');
 
-// Get a reference to the 'submissions' collection in Firestore
-const submissionsCollectionRef = collection(db, 'submissions');
-
-// @desc    Create a new submission and save it to Firestore
-// @route   POST /api/submissions
-const createSubmission = async (req, res) => {
-    try {
-        const { title, description, imageUrl, submittedBy, lat, lng } = req.body;
-
-        if (!title || !description || !imageUrl || lat === undefined || lng === undefined) {
-            return res.status(400).json({ message: 'All fields, including image and location, are required.' });
-        }
-
-        // Create the new submission object
-        const newSubmission = {
-            title,
-            description,
-            imageUrl,
-            submittedBy: submittedBy || 'Anonymous',
-            lat,
-            lng,
-            createdAt: new Date().toISOString(), // Use ISO string for consistent sorting
-            status: 'pending_validation'
-        };
-
-        // Add the new document to the 'submissions' collection
-        const docRef = await addDoc(submissionsCollectionRef, newSubmission);
+// Helper function to get the latest validated report of a specific type
+const getLatestValidatedReport = async (reportType) => {
+    // CORRECTED SYNTAX: Use .collection().where().orderBy().limit().get()
+    const submissionsRef = db.collection('submissions');
+    const snapshot = await submissionsRef
+        .where("status", "==", "validated")
+        .where("type", "==", reportType)
+        .orderBy("createdAt", "desc")
+        .limit(1)
+        .get();
         
-        console.log('New Submission Added to Firestore with ID:', docRef.id);
-        res.status(201).json({ id: docRef.id, ...newSubmission });
-
-    } catch (error) {
-        console.error("Error creating submission in Firestore:", error);
-        res.status(500).json({ message: "Failed to create submission." });
+    if (snapshot.empty) {
+        return null;
     }
+    return snapshot.docs[0].data();
 };
 
-// @desc    Get all submissions from Firestore
-// @route   GET /api/submissions
-const getSubmissions = async (req, res) => {
-    try {
-        // Create a query to get documents and order them by creation date, descending
-        const q = query(submissionsCollectionRef, orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
+// Helper function to run any Python prediction script (No changes needed here)
+const runPredictionScript = (scriptName, data, res) => {
+    const pythonProcess = spawn('python', [`./ai/${scriptName}`, JSON.stringify(data)]);
+    let result = '';
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Python script error (${scriptName}): ${data}`);
+    });
+    pythonProcess.on('close', (code) => {
+        if (code !== 0) {
+            return res.status(500).json({ message: `Prediction script ${scriptName} failed.` });
+        }
+        try {
+            res.status(200).json(JSON.parse(result));
+        } catch (error) {
+            res.status(500).json({ message: "Failed to parse prediction data." });
+        }
+    });
+};
 
-        const submissions = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-
-        res.status(200).json(submissions);
-    } catch (error) {
-        console.error("Error fetching submissions from Firestore:", error);
-        res.status(500).json({ message: "Failed to fetch submissions." });
+const getDeforestationPrediction = async (req, res) => {
+    const latestReport = await getLatestValidatedReport("deforestation");
+    if (!latestReport) {
+        return res.status(404).json({ message: "No validated deforestation reports found." });
     }
+    runPredictionScript('predict_deforestation.py', latestReport, res);
+};
+
+const getPlasticPrediction = async (req, res) => {
+    const latestReport = await getLatestValidatedReport("plastic");
+    if (!latestReport) {
+        return res.status(404).json({ message: "No validated plastic waste reports found." });
+    }
+    runPredictionScript('predict_plastic_waste.py', latestReport, res);
+};
+
+const getCoralPrediction = async (req, res) => {
+    const latestReport = await getLatestValidatedReport("coral");
+    if (!latestReport) {
+        return res.status(404).json({ message: "No validated coral bleaching reports found." });
+    }
+    runPredictionScript('predict_coral_bleaching.py', latestReport, res);
 };
 
 module.exports = {
-    createSubmission,
-    getSubmissions,
+    getDeforestationPrediction,
+    getPlasticPrediction,
+    getCoralPrediction
 };

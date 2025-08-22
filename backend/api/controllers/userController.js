@@ -1,38 +1,55 @@
-// --- MOCK DATABASE ---
-// This is a temporary placeholder.
-// Later, this will fetch data from your Firestore database.
-const MOCK_USERS_DB = {
-    "user_uid_1": { uid: "user_uid_1", email: "researcher@example.com", role: "researcher", name: "Dr. Aris", skills: ["Python", "GIS Mapping"] },
-    "user_uid_2": { uid: "user_uid_2", email: "ngo@example.com", role: "ngo", name: "Green Earth NGO", skills: ["Community Mobilization", "Grant Writing"] },
-    "user_uid_3": { uid: "user_uid_3", email: "student@example.com", role: "student", name: "Sam", skills: ["React.js", "GIS Mapping"] },
-};
-// ---------------------
+const { db } = require('../../config/firebaseAdmin');
 
-const getUserProfile = (req, res) => {
-    const { userId } = req.params;
-    const user = MOCK_USERS_DB[userId];
+/**
+ * @desc    Get a specific user's profile from the 'users' collection in Firestore.
+ * @route   GET /api/users/:userId
+ */
+const getUserProfile = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        // CORRECTED SYNTAX: Use .collection().doc()
+        const userDocRef = db.collection('users').doc(userId);
+        const userDoc = await userDocRef.get();
 
-    if (user) {
-        res.status(200).json(user);
-    } else {
-        res.status(404).json({ message: "User not found" });
+        if (userDoc.exists) {
+            res.status(200).json({ uid: userDoc.id, ...userDoc.data() });
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (error)        {
+        console.error("Error fetching user profile from Firestore:", error);
+        res.status(500).json({ message: "Server error: Failed to fetch user profile." });
     }
 };
 
-const findUsersBySkill = (req, res) => {
-    const { skill } = req.params;
-    if (!skill) {
-        return res.status(400).json({ message: "Skill parameter is required" });
-    }
+/**
+ * @desc    Find users who have a specific skill in their profile.
+ * @route   GET /api/users/match/:skill
+ */
+const findUsersBySkill = async (req, res) => {
+    try {
+        const { skill } = req.params;
+        if (!skill) {
+            return res.status(400).json({ message: "A skill parameter is required for matching." });
+        }
+        // CORRECTED SYNTAX: Use .collection().where()
+        const usersRef = db.collection('users');
+        const snapshot = await usersRef.where('skills', 'array-contains', skill.toLowerCase()).get();
 
-    const matchedUsers = Object.values(MOCK_USERS_DB).filter(user =>
-        user.skills.some(s => s.toLowerCase() === skill.toLowerCase())
-    );
+        if (snapshot.empty) {
+            return res.status(404).json({ message: `No users found with the skill: ${skill}` });
+        }
 
-    if (matchedUsers.length > 0) {
+        const matchedUsers = snapshot.docs.map(doc => ({
+            uid: doc.id,
+            ...doc.data()
+        }));
+
         res.status(200).json(matchedUsers);
-    } else {
-        res.status(404).json({ message: `No users found with the skill: ${skill}` });
+
+    } catch (error) {
+        console.error("Error finding users by skill in Firestore:", error);
+        res.status(500).json({ message: "Server error: Failed to find users by skill." });
     }
 };
 

@@ -1,13 +1,37 @@
-// --- MOCK DATABASE ---
-const MOCK_THREATS_DB = [
-    { id: 1, lat: 28.6139, lng: 79.2090, title: "Illegal Deforestation", description: "Large-scale illegal logging reported.", type: "deforestation", severity: "High" },
-    { id: 2, lat: 20.7634, lng: 88.0375, title: "Plastic Waste Buildup", description: "Significant plastic accumulation in the river.", type: "plastic", severity: "Medium" },
-    { id: 3, lat: 234.5726, lng: 88.3639, title: "Coral Bleaching Alert", description: "High sea temperatures detected, risk is critical.", type: "coral", severity: "Critical" },
-];
-// ---------------------
+const { db } = require('../../config/firebaseAdmin');
 
-const getThreats = (req, res) => {
-    res.status(200).json(MOCK_THREATS_DB);
+/**
+ * @desc    Get all validated submissions to be displayed as threats on the map.
+ * @route   GET /api/threats
+ */
+const getThreats = async (req, res) => {
+    try {
+        // CORRECTED SYNTAX: Use the Admin SDK's methods: db.collection() and .where()
+        const submissionsRef = db.collection('submissions');
+        const snapshot = await submissionsRef.where('status', '==', 'validated').get();
+
+        if (snapshot.empty) {
+            return res.status(200).json([]);
+        }
+
+        const threats = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                lat: data.lat,
+                lng: data.lng,
+                title: data.title,
+                description: data.description,
+                type: data.type || 'deforestation',
+                severity: data.severity || 'High'
+            };
+        });
+
+        res.status(200).json(threats);
+    } catch (error) {
+        console.error("Error fetching validated submissions from Firestore:", error);
+        res.status(500).json({ message: "Server error: Failed to fetch threats." });
+    }
 };
 
 module.exports = {
