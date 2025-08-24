@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import 'leaflet/dist/leaflet.css';
 
 // Import Components
 import Navbar from './components/Navbar';
@@ -13,9 +12,11 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage'; 
 import ProfilePage from './pages/ProfilePage';
+import AnalysisPage from './pages/AnalysisPage';
 import ThreatRadarPage from './pages/ThreatRadarPage';
-import SubmitReportPage from './pages/SubmitReportPage'; // This import is likely already here
-import DataFeedPage from './pages/DataFeedPage';
+import EcoUploadsPage from './pages/EcoUploadsPage'; // This import is likely already here
+import TrackSdgPage from './pages/TrackSdgPage';
+import ContentCreationPage from './pages/ContentCreationPage';
 
 function App() {
   return (
@@ -29,36 +30,29 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
 
           {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={ <ProtectedRoute> <DashboardPage /> </ProtectedRoute> }
-          />
-          <Route
-            path="/profile"
-            element={ <ProtectedRoute> <ProfilePage /> </ProtectedRoute> }
-          />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          
+          {/* --- NEW DIRECT ROUTE FOR CREATOR SECTION --- */}
+          <Route path="/create-content" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
           <Route
             path="/threat-radar"
             element={ <ProtectedRoute> <ThreatRadarPage /> </ProtectedRoute> }
           />
+          <Route path="/analysis" element={<AnalysisPage />} />
 
           {/* THIS IS THE MISSING PART 👇 */}
           <Route
-            path="/submit-report"
+            path="/eco-uploads" // Change this path
             element={
               <ProtectedRoute>
-                <SubmitReportPage />
+                <EcoUploadsPage />
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/data-feed"
-            element={
-              <ProtectedRoute>
-                <DataFeedPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/track-sdg" element={<TrackSdgPage />} />
+          {/* Route for creating content from a specific claim */}
+          <Route path="/create-content/:claimId" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
         </Routes>
       </Router>
     </AuthProvider>

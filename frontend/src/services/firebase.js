@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyADzVWEzHlpIkOuhTV7-3CcilmlslPOr1Y",
   authDomain: "ecosynth-hackathon.firebaseapp.com",

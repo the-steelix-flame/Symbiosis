@@ -1,32 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../services/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-
-const styles = {
-  myProjectsCard: { border: '1px solid #28a745', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f0fff0' },
-  sectionTitle: { borderBottom: '2px solid #eee', paddingBottom: '10px' }
-};
+import { collection, query, where, getDocs, doc, updateDoc, arrayRemove } from 'firebase/firestore';
+import { useAuth } from '../../contexts/AuthContext';
+import './ProjectLists.css'; // Import the shared CSS
 
 export default function MyProjectsList() {
-  const { currentUser } = useAuth();
   const [myProjects, setMyProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { currentUser } = useAuth();
 
   const fetchMyProjects = useCallback(async () => {
-    if (!currentUser) return;
-    setLoading(true);
-    try {
-      const myProjectsQuery = query(
-        collection(db, "projects"),
-        where("teamMembers", "array-contains", currentUser.uid)
-      );
-      const querySnapshot = await getDocs(myProjectsQuery);
-      const projectsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMyProjects(projectsData);
-    } catch (error) {
-      console.error("Error fetching user's projects:", error);
+    if (!currentUser) {
+      setLoading(false);
+      return;
     }
+    setLoading(true);
+    const q = query(collection(db, "projects"), where("teamMembers", "array-contains", currentUser.uid));
+    const querySnapshot = await getDocs(q);
+    setMyProjects(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     setLoading(false);
   }, [currentUser]);
 
@@ -34,21 +25,35 @@ export default function MyProjectsList() {
     fetchMyProjects();
   }, [fetchMyProjects]);
 
+  const handleLeaveProject = async (projectId) => {
+     if (!currentUser) return;
+    const projectRef = doc(db, 'projects', projectId);
+    await updateDoc(projectRef, {
+      teamMembers: arrayRemove(currentUser.uid)
+    });
+    fetchMyProjects(); // Refresh the list
+  };
+
+  if (loading) return <p>Loading your projects...</p>;
+  if (!currentUser) return null;
+
   return (
-    <div>
-      <h3 style={styles.sectionTitle}>My Projects</h3>
-      {loading ? (
-        <p>Loading your projects...</p>
-      ) : myProjects.length > 0 ? (
-        myProjects.map(project => (
-          <div key={project.id} style={styles.myProjectsCard}>
-            <h4>{project.title}</h4>
-            <p><strong>Status:</strong> {project.status}</p>
+    <div className="project-list-container">
+      <h3>My Joined Projects</h3>
+      <div className="project-grid">
+        {myProjects.length > 0 ? myProjects.map(project => (
+          <div key={project.id} className="list-project-card">
+            <div className="card-content">
+              <h4>{project.title}</h4>
+              <p><strong>Category:</strong> {project.category}</p>
+              <p><strong>Status:</strong> {project.status}</p>
+            </div>
+            <button onClick={() => handleLeaveProject(project.id)} className="list-action-button leave-button">
+              Leave Project
+            </button>
           </div>
-        ))
-      ) : (
-        <p>You haven't joined any projects yet. Find one in the list of active projects below!</p>
-      )}
+        )) : <p>You haven't joined any projects yet.</p>}
+      </div>
     </div>
   );
 }

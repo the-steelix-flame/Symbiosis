@@ -1,0 +1,91 @@
+.project-list-container {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.project-list-container h3 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #4a5568;
+    padding-bottom: 10px;
+}
+
+/* --- Main Grid Layout --- */
+.project-list-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+/* --- Shared Project Card Style --- */
+.list-project-card {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 20px;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-project-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.list-project-card p {
+    margin: 4px 0;
+}
+
+/* --- Card Content --- */
+.card-content {
+    flex-grow: 1; /* Pushes button to the bottom */
+}
+
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 0;
+    align-items: center;
+}
+
+.skill-tag {
+    background: #6c757d;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+/* --- Action Buttons --- */
+.list-action-button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    width: 100%; /* Make buttons full width */
+}
+
+.join-button {
+    background-color: #17a2b8;
+}
+
+.withdraw-button {
+    background-color: #dc3545;
+}
+
+.leave-button {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.list-action-button:hover {
+    opacity: 0.9;
+}

@@ -1,0 +1,70 @@
+.leaderboard-container {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 40px;
+}
+
+.leaderboard-container h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #4a5568;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+}
+
+/* Style the top 3 differently */
+.leaderboard-item:nth-child(1) {
+    background-color: #4c4125;
+    font-weight: bold;
+}
+.leaderboard-item:nth-child(2) {
+    background-color: #4a4a4a;
+    font-weight: bold;
+}
+.leaderboard-item:nth-child(3) {
+    background-color: #4f3c2a;
+    font-weight: bold;
+}
+
+.leaderboard-rank {
+    font-weight: bold;
+    color: #fff;
+    width: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.badge-icon {
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+}
+
+.leaderboard-name {
+    flex-grow: 1;
+}
+
+.leaderboard-points {
+    font-weight: bold;
+    color: #38a169; /* Green for points */
+}
