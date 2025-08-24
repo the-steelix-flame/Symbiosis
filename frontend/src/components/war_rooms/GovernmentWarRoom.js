@@ -3,14 +3,15 @@ import { db } from '../../services/firebase';
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectForm from './CreateProjectForm';
+import ClaimChallengeList from './ClaimChallengeList'; // 1. Import the component
+import './WarRoom.css';
 
-// Helper function to calculate and display task progress
 const getProgress = (project) => {
   if (!project.tasks || project.tasks.length === 0) {
     return "No tasks assigned yet.";
   }
   const completed = project.tasks.filter(task => task.isCompleted).length;
-  return `${completed} / ${project.tasks.length} tasks complete`;
+  return '${completed} / ${project.tasks.length} tasks complete';
 };
 
 export default function GovernmentWarRoom() {
@@ -54,19 +55,21 @@ export default function GovernmentWarRoom() {
   }
 
   return (
-    <div>
-      <h1>Government War Room</h1>
+    <div className="war-room-container">
+      <h1>Government Unity Desk</h1>
       <p>Manage your proposed initiatives and track their status.</p>
       <hr />
 
       {editingProject ? (
-        <div>
+        <div className="project-card">
           <h3>Editing "{editingProject.title}"</h3>
           <CreateProjectForm projectToEdit={editingProject} onProjectCreated={handleFormClose} />
-          <button onClick={() => setEditingProject(null)} style={{marginTop: '10px'}}>Cancel Edit</button>
+          <button onClick={() => setEditingProject(null)} className="action-button cancel-button">
+            Cancel Edit
+          </button>
         </div>
       ) : (
-        <div>
+        <div className="project-card">
           <h3>Propose a New Initiative</h3>
           <CreateProjectForm onProjectCreated={fetchMyProjects} />
         </div>
@@ -77,18 +80,20 @@ export default function GovernmentWarRoom() {
       <h3>My Proposals</h3>
       {loading ? <p>Loading your projects...</p> : (
         myProjects.map(project => (
-          <div key={project.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0', borderRadius: '5px' }}>
+          <div key={project.id} className="project-card">
             <h4>{project.title}</h4>
             <p><strong>Category:</strong> {project.category}</p>
             <p><strong>Status:</strong> {project.status}</p>
             <p><strong>Team Members:</strong> {project.teamMembers.length}</p>
-            {/* --- NEW PROGRESS MONITOR --- */}
             <p><strong>Progress:</strong> {getProgress(project)}</p>
-            <button onClick={() => handleEdit(project)}>Edit</button>
-            <button onClick={() => handleDelete(project.id)} style={{ marginLeft: '10px', backgroundColor: '#dc3545', color: 'white', border: 'none' }}>Delete</button>
+            <button onClick={() => handleEdit(project)} className="action-button edit-button">Edit</button>
+            <button onClick={() => handleDelete(project.id)} className="action-button delete-button">Delete</button>
           </div>
         ))
       )}
+      
+      {/* 2. Add the component here */}
+      <ClaimChallengeList />
     </div>
   );
 }

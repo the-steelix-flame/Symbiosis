@@ -1,0 +1,71 @@
+/* Main container for all war room pages */
+.war-room-container {
+    padding-top: 50px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    color: #fff;
+}
+
+.war-room-container h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+}
+
+/* Styles for ResearcherWarRoom */
+.section-title {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.claims-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* --- NEW: Styles for GovernmentWarRoom Project List --- */
+.project-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+}
+
+.project-card h3, .project-card h4 {
+    margin-top: 0;
+}
+
+.project-card p {
+    margin-bottom: 5px;
+}
+
+.action-button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.edit-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #6c757d;
+    color: white;
+    margin-top: 10px;
+}

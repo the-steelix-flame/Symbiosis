@@ -1,0 +1,163 @@
+.content-post {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 2rem auto;
+    color: #e2e8f0;
+    position: relative; /* Needed for positioning the delete button */
+}
+
+/* --- NEW: Delete Button --- */
+.delete-post-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #4a5568;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.delete-post-button:hover {
+    background-color: #dc3545;
+}
+
+
+.post-header {
+    padding: 1rem;
+    border-bottom: 1px solid #4a5568;
+}
+
+.post-author {
+    font-weight: bold;
+    color: #fff;
+}
+
+.post-meta {
+    margin-left: 0.5rem;
+    color: #a0aec0;
+}
+
+.post-body {
+    padding: 1rem;
+}
+
+.post-claim-text {
+    font-style: italic;
+    color: #a0aec0;
+    border-left: 3px solid #48bb78;
+    padding-left: 1rem;
+    margin: 0 0 1rem 0;
+}
+
+.post-description {
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+.post-media-short {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    margin-top: 1rem;
+    border-radius: 8px;
+}
+
+.post-media-short iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.post-media-meme img {
+    max-width: 100%;
+    border-radius: 4px;
+    margin-top: 1rem;
+    display: block;
+}
+
+.post-footer {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #4a5568;
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-button {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+}
+
+.footer-button:hover {
+    color: #fff;
+}
+
+.footer-button.liked {
+    color: #38a169; /* Green when liked */
+    font-weight: bold;
+}
+
+.comments-section {
+    padding: 0 1rem 1rem;
+}
+
+.comment-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.comment-input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: #fff;
+}
+
+.comment-submit-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    background-color: #38a169;
+    color: #fff;
+    cursor: pointer;
+}
+
+.comment-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.comment {
+    border-bottom: 1px solid #4a5568;
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #fff;
+    margin-right: 0.5rem;
+}

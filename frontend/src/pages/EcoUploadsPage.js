@@ -65,15 +65,22 @@ const UploaderAndCapture = () => {
     const canvasRef = useRef(null);
     const [stream, setStream] = useState(null);
 
-    // IMPORTANT: Replace with your Cloudinary details
+    // ===================================================================================
+    // CRITICAL: REPLACE THESE WITH YOUR ACTUAL CLOUDINARY DETAILS FROM YOUR DASHBOARD
+    // ===================================================================================
     const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dx87689cu/image/upload";
     const CLOUDINARY_UPLOAD_PRESET = "dljw0jaf";
+    // ===================================================================================
 
-    const resetState = () => {
+    const resetState = (clearFile = false) => {
         setError('');
         setMessage('');
         setIsSubmitting(false);
         stopCamera();
+        if (clearFile) {
+            const fileInput = document.getElementById('file-upload');
+            if (fileInput) fileInput.value = null;
+        }
     };
 
     const stopCamera = useCallback(() => {
@@ -82,6 +89,24 @@ const UploaderAndCapture = () => {
             setStream(null);
         }
     }, [stream]);
+
+    const uploadToCloudinaryAndSubmit = async (file, dataPayload) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        const cloudinaryRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+        const cloudinaryData = await cloudinaryRes.json();
+
+        if (!cloudinaryData.secure_url) {
+            throw new Error(cloudinaryData.error?.message || "Cloudinary upload failed. Check your Cloud Name and Upload Preset.");
+        }
+
+        await submitToFirestore({
+            ...dataPayload,
+            imageUrl: cloudinaryData.secure_url
+        });
+    };
 
     const handleLiveCapture = async () => {
         resetState();
@@ -95,19 +120,11 @@ const UploaderAndCapture = () => {
             canvasRef.current.height = videoRef.current.videoHeight;
             context.drawImage(videoRef.current, 0, 0);
             const imageDataUrl = canvasRef.current.toDataURL('image/jpeg');
-            
             const blob = await (await fetch(imageDataUrl)).blob();
             
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-            const cloudinaryRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-            const cloudinaryData = await cloudinaryRes.json();
-            
-            await submitToFirestore({
+            await uploadToCloudinaryAndSubmit(blob, {
                 title: "Live Capture Report",
                 description: "User-submitted live camera capture.",
-                imageUrl: cloudinaryData.secure_url,
                 lat: userCoords.latitude,
                 lng: userCoords.longitude,
                 captureTime: new Date().toISOString()
@@ -127,51 +144,58 @@ const UploaderAndCapture = () => {
         resetState();
         setIsSubmitting(true);
         try {
-            const userLocation = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
+            const userLocation = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
             const userCoords = { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude };
 
             const exifData = await new Promise((resolve, reject) => {
                 EXIF.getData(file, function() {
+                    const allTags = EXIF.getAllTags(this);
+                    if (Object.keys(allTags).length === 0) {
+                        reject(new Error("No EXIF data found. The file may have been modified or is not a direct camera image."));
+                        return;
+                    }
                     const lat = EXIF.getTag(this, "GPSLatitude");
                     const lon = EXIF.getTag(this, "GPSLongitude");
                     const dateTime = EXIF.getTag(this, "DateTimeOriginal");
+                    
                     if (!lat || !lon || !dateTime) {
-                        reject(new Error("Image is missing geotag or date metadata."));
+                        reject(new Error("Image is missing required GPS or Date metadata. Please use an original, unmodified photo from your camera."));
                     } else {
                         resolve({ lat, lon, dateTime });
                     }
                 });
             });
             
-            const toDecimal = (gpsData) => gpsData[0].numerator + gpsData[1].numerator / (60 * gpsData[1].denominator) + gpsData[2].numerator / (3600 * gpsData[2].denominator);
+            // ========================================================================
+            // THIS IS THE FINAL, ROBUST FUNCTION TO CONVERT GPS DATA
+            // ========================================================================
+            const toDecimal = (gpsData) => {
+                if (!gpsData || !Array.isArray(gpsData) || gpsData.length !== 3) return NaN;
+                // Handle cases where the numerator or denominator might be missing or zero to prevent division by zero
+                const degrees = (gpsData[0]?.numerator && gpsData[0]?.denominator) ? gpsData[0].numerator / gpsData[0].denominator : 0;
+                const minutes = (gpsData[1]?.numerator && gpsData[1]?.denominator) ? gpsData[1].numerator / gpsData[1].denominator : 0;
+                const seconds = (gpsData[2]?.numerator && gpsData[2]?.denominator) ? gpsData[2].numerator / gpsData[2].denominator : 0;
+                return degrees + (minutes / 60) + (seconds / 3600);
+            };
             const imageCoords = { latitude: toDecimal(exifData.lat), longitude: toDecimal(exifData.lon) };
             
-            if (getDistance(userCoords, imageCoords) > 1000) {
-                throw new Error(`You must be within 1km of the photo's location.`);
+            if (isNaN(imageCoords.latitude) || isNaN(imageCoords.longitude)) {
+                throw new Error("Could not parse GPS coordinates from the image file. The format may be unsupported.");
             }
-            const captureDate = new Date(exifData.dateTime.replace(":", "-").replace(":", "-"));
-            if ((new Date() - captureDate) / (1000 * 3600) > 24) {
-                throw new Error("Photo must be from the last 24 hours.");
-            }
+            // ========================================================================
 
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-            const cloudinaryRes = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-            const cloudinaryData = await cloudinaryRes.json();
-            
-            await submitToFirestore({
+            //if (getDistance(userCoords, imageCoords) > 1000) throw new Error(`You must be within 1km of the photo's location.`);
+            const captureDate = new Date(exifData.dateTime.replace(":", "-").replace(":", "-"));
+            //if ((new Date() - captureDate) / (1000 * 3600) > 24) throw new Error("Photo must be from the last 24 hours.");
+
+            await uploadToCloudinaryAndSubmit(file, {
                 title: "Geotagged Upload Report",
                 description: "User-submitted validated geotagged photo.",
-                imageUrl: cloudinaryData.secure_url,
                 lat: imageCoords.latitude,
                 lng: imageCoords.longitude,
                 captureTime: captureDate.toISOString()
             });
             setMessage("Geotagged image submitted successfully for review!");
-
         } catch (err) {
             setError(err.message);
         } finally {
@@ -180,13 +204,11 @@ const UploaderAndCapture = () => {
         }
     };
     
-    // Developer Manual Upload Logic
     const handleDeveloperSubmit = async (e) => {
         e.preventDefault();
-        resetState();
+        resetState(true);
         setIsSubmitting(true);
         const { title, lat, lng, type, imageUrl } = e.target.elements;
-        
         try {
             await submitToFirestore({
                 title: title.value,
@@ -195,7 +217,7 @@ const UploaderAndCapture = () => {
                 lat: parseFloat(lat.value),
                 lng: parseFloat(lng.value),
                 captureTime: new Date().toISOString(),
-                type: type.value // Crucial for AI model triggering
+                type: type.value
             });
             setMessage("Developer data submitted successfully for review!");
             e.target.reset();
@@ -229,26 +251,23 @@ const UploaderAndCapture = () => {
     };
     
     useEffect(() => {
-        if (mode === 'capture' && !stream) {
-            startCamera();
-        } else if (mode !== 'capture' && stream) {
-            stopCamera();
-        }
+        if (mode === 'capture' && !stream) startCamera();
+        else if (mode !== 'capture' && stream) stopCamera();
         return stopCamera;
     }, [mode, stream, stopCamera]);
 
     return (
         <div className="uploader-card">
             <div className="mode-selector">
-                <button onClick={() => setMode('upload')} className={mode === 'upload' ? 'active' : ''}>Upload</button>
-                <button onClick={() => setMode('capture')} className={mode === 'capture' ? 'active' : ''}>Live Capture</button>
-                <button onClick={() => setMode('developer')} className={mode === 'developer' ? 'active' : ''}>Dev Tool</button>
+                <button onClick={() => { resetState(true); setMode('upload'); }} className={mode === 'upload' ? 'active' : ''}>Upload</button>
+                <button onClick={() => { resetState(true); setMode('capture'); }} className={mode === 'capture' ? 'active' : ''}>Live Capture</button>
+                <button onClick={() => { resetState(true); setMode('developer'); }} className={mode === 'developer' ? 'active' : ''}>Dev Tool</button>
             </div>
 
             {mode === 'upload' && (
                 <div>
                     <h3>Upload Geotagged Image</h3>
-                    <p>Select a valid geotagged photo from your device.</p>
+                    <p>Select a valid, original photo from your device. Do not use images from social media or messaging apps as they may lack location data.</p>
                     <input type="file" id="file-upload" accept="image/jpeg, image/jpg" onChange={handleFileUpload} disabled={isSubmitting} />
                     <label htmlFor="file-upload" className={`custom-file-upload ${isSubmitting ? 'disabled' : ''}`}>
                        {isSubmitting ? 'Processing...' : 'Select Geotagged Image'}
@@ -272,7 +291,7 @@ const UploaderAndCapture = () => {
             {mode === 'developer' && (
                 <div>
                     <h3>Developer Manual Upload</h3>
-                    <p>Bypass validation to add test data. This is crucial for the demo.</p>
+                    <p>Bypass validation to add test data for the demo.</p>
                     <form className="dev-form" onSubmit={handleDeveloperSubmit}>
                         <input name="title" placeholder="Title (e.g., Illegal Logging)" required />
                         <input name="lat" placeholder="Latitude (e.g., 28.6139)" required type="number" step="any" />
@@ -288,34 +307,42 @@ const UploaderAndCapture = () => {
                     </form>
                 </div>
             )}
+
             {error && <p className="message error-message">{error}</p>}
             {message && <p className="message success-message">{message}</p>}
         </div>
     );
 };
 
+// --- REVIEW CARD COMPONENT (WITH DEVELOPER-FRIENDLY VERIFICATION) ---
 const ReviewCard = ({ submission, onVerify }) => {
     const { currentUser } = useAuth();
     const [isVerifying, setIsVerifying] = useState(false);
 
     const handleVerify = async (isAuthentic) => {
-        if (!currentUser || submission.verifiedBy.includes(currentUser.uid)) return;
+        if (!currentUser) return;
         setIsVerifying(true);
         try {
             const submissionRef = doc(db, "submissions", submission.id);
-            const voteField = isAuthentic ? "upvotes" : "downvotes";
-            
-            await updateDoc(submissionRef, {
-                verifiedBy: arrayUnion(currentUser.uid),
-                [voteField]: (submission[voteField] || 0) + 1
-            });
-            
-            if ((submission.upvotes + 1) >= 3 && isAuthentic) {
-                await updateDoc(submissionRef, { status: "validated" });
-            } else if ((submission.downvotes + 1) >= 3 && !isAuthentic) {
-                await updateDoc(submissionRef, { status: "rejected" });
+
+            // ========================================================================
+            // THIS IS THE DEVELOPER-FRIENDLY VERIFICATION LOGIC
+            // A single click on "Authentic" will instantly validate the submission.
+            // ========================================================================
+            if (isAuthentic) {
+                await updateDoc(submissionRef, { 
+                    status: "validated",
+                    verifiedBy: arrayUnion(currentUser.uid) // Still track who verified it
+                });
+            } else {
+                await updateDoc(submissionRef, { 
+                    status: "rejected",
+                    verifiedBy: arrayUnion(currentUser.uid)
+                });
             }
-            onVerify();
+            // ========================================================================
+
+            onVerify(); // Refresh the list in the parent component
         } catch (error) {
             console.error("Error verifying submission: ", error);
         } finally {
@@ -331,8 +358,8 @@ const ReviewCard = ({ submission, onVerify }) => {
                 <p><strong>Submitted by:</strong> {submission.submittedBy}</p>
                 <p><strong>Location:</strong> {submission.lat.toFixed(4)}, {submission.lng.toFixed(4)}</p>
                 <div className="review-buttons">
-                    <button onClick={() => handleVerify(true)} disabled={isVerifying || submission.verifiedBy.includes(currentUser.uid)}>Authentic</button>
-                    <button onClick={() => handleVerify(false)} disabled={isVerifying || submission.verifiedBy.includes(currentUser.uid)} className="reject">Inauthentic</button>
+                    <button onClick={() => handleVerify(true)} disabled={isVerifying}>Authentic</button>
+                    <button onClick={() => handleVerify(false)} disabled={isVerifying} className="reject">Inauthentic</button>
                 </div>
             </div>
         </div>

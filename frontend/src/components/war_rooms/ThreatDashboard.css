@@ -1,99 +1,78 @@
+/* Main container for the threat dashboard */
 .threat-dashboard {
     position: absolute;
-    top: 0;
-    left: 0; /* Position on the left */
-    width: 380px; /* A bit wider */
-    height: 100%;
-    
-    /* "Glassmorphism" effect */
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-right: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
-
-    z-index: 1001;
-    box-shadow: 2px 0 15px rgba(0,0,0,0.2);
-    padding: 25px;
-    box-sizing: border-box;
-    
-    /* Smooth slide-in transition */
-    transform: translateX(0);
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    top: 120px;
+    left: 20px;
+    width: 350px;
+    max-height: calc(100% - 40px);
+    background-color: #2c3e50; /* Dark blue-grey background */
+    color: #ecf0f1; /* Light grey text */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto; /* Allows scrolling if content is too long */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Adds space between sections */
 }
 
-/* Add a class to hide the dashboard off-screen */
-.threat-dashboard.hidden {
-    transform: translateX(-100%);
-}
-
+/* Close button for the dashboard */
 .close-btn {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.2);
+    top: 10px;
+    right: 15px;
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    line-height: 30px;
-    text-align: center;
+    color: #ecf0f1;
+    font-size: 28px;
     cursor: pointer;
-    color: white;
-    transition: background 0.2s ease;
+    line-height: 1;
 }
 
 .close-btn:hover {
-    background: rgba(0, 0, 0, 0.4);
+    color: #e74c3c; /* Red color on hover */
 }
 
-.threat-dashboard h3 {
-    margin-top: 10px;
-    color: #ffffff; /* White text for better contrast on blur */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 15px;
-    font-weight: 400;
-    font-size: 24px;
+/* --- NEW STYLES FOR THE IMAGE --- */
+
+/* Container for the uploaded image */
+.threat-image-container {
+    width: 100%;
+    max-height: 200px; /* Control the maximum height of the image */
+    border-radius: 6px;
+    overflow: hidden; /* Ensures the image respects the border-radius */
+    margin-bottom: 15px; /* Adds some space below the image */
 }
 
-.threat-dashboard p {
-    line-height: 1.7;
-    color: #e0e0e0; /* Lighter text color */
-    font-size: 16px;
+/* The actual image element */
+.threat-image {
+    width: 100%; /* Makes the image take the full width of its container */
+    height: 100%; /* Makes the image take the full height of its container */
+    object-fit: cover; /* This is the magic part: it scales the image to cover the container without stretching it */
+    display: block;
 }
 
-.severity {
-    padding: 8px 12px;
-    border-radius: 20px; /* Pill shape */
-    color: white;
-    display: inline-block;
-    font-weight: 500;
-    margin-top: 5px;
+/* --- END OF NEW STYLES --- */
+
+
+/* Styling for the threat details section */
+.threat-details, .weather-info {
+    border-top: 1px solid #34495e; /* Separator line */
+    padding-top: 15px;
 }
 
-/* Vibrant severity colors */
-.severity-high { background-color: #e53935; }
-.severity-medium { background-color: #fdd835; color: #333; }
-.severity-critical { background-color: #8e24aa; }
-
-.dashboard-actions {
-    margin-top: 25px;
-    display: flex;
-    gap: 15px;
+.threat-details h3, .weather-info h4 {
+    margin-top: 0;
+    color: #3498db; /* Blue accent color for headings */
+    font-size: 1.2em;
 }
 
-.dashboard-actions button {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 8px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 16px;
-    transition: background 0.2s ease;
+.threat-details p, .weather-info p {
+    margin: 5px 0;
+    line-height: 1.5;
 }
 
-.dashboard-actions button:hover {
-    background: rgba(255, 255, 255, 0.3);
+.threat-details strong, .weather-info strong {
+    color: #95a5a6; /* Slightly lighter color for labels */
 }

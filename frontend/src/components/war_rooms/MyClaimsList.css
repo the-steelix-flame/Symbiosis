@@ -1,0 +1,57 @@
+.my-claims-container {
+    border-left: 2px solid #007bff;
+    padding-left: 20px;
+    height: 100%; /* Ensures container takes up space */
+}
+
+.my-claims-container h3 {
+    color: #fff;
+    margin-top: 0;
+}
+
+.my-claim-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #4a5568;
+}
+
+.my-claim-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.my-claim-summary {
+    font-size: 1rem;
+    color: #e2e8f0;
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.my-claim-source-link {
+    font-size: 0.9rem;
+    color: #63b3ed;
+    word-break: break-all;
+}
+
+.delete-claim-button {
+    margin-top: 10px;
+    padding: 6px 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.delete-claim-button:hover {
+    background-color: #c82333;
+}
+
+/* Styles for the My Claims List */
+.my-claims-list {
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+}

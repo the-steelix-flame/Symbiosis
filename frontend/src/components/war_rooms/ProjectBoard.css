@@ -1,0 +1,118 @@
+.project-board {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+}
+
+.project-board h3 {
+    border-bottom: 2px solid #4a5568;
+    padding-bottom: 10px;
+    color: #fff;
+}
+
+/* --- Card Styles --- */
+.project-card, .active-project-card, .completed-project-card {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #2d3748; /* Darker card background */
+    border: 1px solid #4a5568;
+    color: #e2e8f0; /* Light text for dark cards */
+}
+
+.project-card h4, .active-project-card h4, .completed-project-card h4 {
+    margin-top: 0;
+    color: #fff;
+}
+
+/* --- Task Manager Styles --- */
+.task-manager-container {
+    margin-top: 15px;
+    border-top: 1px solid #4a5568;
+    padding-top: 15px;
+}
+
+.task-manager-container strong {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.add-task-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-task-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #4a5568;
+    background-color: #1a202c;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.add-task-button {
+    padding: 8px 12px;
+    border: 1px solid #4a5568;
+    background-color: #4a5568;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.task-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.task-item-completed span {
+    text-decoration: line-through;
+    color: #a0aec0;
+}
+
+/* --- Action Button Styles --- */
+.project-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.action-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.complete-button {
+    background-color: #28a745;
+}
+
+.leave-button {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.join-button {
+    background-color: #17a2b8;
+}

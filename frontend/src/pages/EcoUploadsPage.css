@@ -1,9 +1,11 @@
 .eco-uploads-container {
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     gap: 40px;
-    padding: 40px;
-    background-color: #f0f2f5;
+    padding-top: 100px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    background-color: #051721;
 }
 
 .upload-panel {
@@ -18,7 +20,12 @@
 
 .review-panel h2 {
     margin-top: 0;
-    color: #1c1e21;
+    color: #fdfeff;
+}
+
+.review-panel p {
+    margin-top: 0;
+    color: #fdfeff;
 }
 
 .uploader-card {
@@ -30,6 +37,7 @@
 
 .uploader-card h3 {
     margin-top: 0;
+    color:#000000
 }
 
 .uploader-card p {
@@ -86,6 +94,12 @@ input[type="file"] {
 
 .review-info p {
     margin: 0 0 10px 0;
+    color: #000000;
+}
+
+.review-info h4 {
+    margin: 0 0 10px 0;
+    color: #000000;
 }
 
 .review-buttons {

@@ -1,30 +1,33 @@
 import React from 'react';
+import './MyClaimsList.css'; // Import the new stylesheet
 
-const styles = {
-  container: { padding: '20px', border: '1px solid #eee', marginTop: '20px', borderRadius: '5px' },
-  claimCard: { borderBottom: '1px solid #ddd', padding: '10px 0' },
-  link: { color: '#007bff', textDecoration: 'none' }
-};
-
-export default function MyClaimsList({ claims, loading }) {
+// Component now accepts an onDeleteClaim function prop
+export default function MyClaimsList({ claims, loading, onDeleteClaim }) {
+  
   if (loading) {
-    return <div style={styles.container}><p>Loading claims...</p></div>;
+    return <p>Loading your claims...</p>;
   }
 
   return (
-    <div style={styles.container}>
-      <h3>My Submitted Claims</h3>
+    <div className="my-claims-container">
+      <h3>My Submissions</h3>
       {claims.length > 0 ? (
         claims.map(claim => (
-          <div key={claim.id} style={styles.claimCard}>
-            <p>"{claim.claimText}"</p>
-            <a href={claim.sourcePaperURL} target="_blank" rel="noopener noreferrer" style={styles.link}>
-              View Submitted PDF
+          <div key={claim.id} className="my-claim-item">
+            {/* FIX: Changed claim.title to claim.claimText */}
+            <p className="my-claim-title">"{claim.claimText}"</p>
+            
+            <a href={claim.sourcePaperURL} target="_blank" rel="noopener noreferrer" className="my-claim-source-link">
+              Source
             </a>
+            <br />
+            <button onClick={() => onDeleteClaim(claim.id)} className="delete-claim-button">
+              Delete
+            </button>
           </div>
         ))
       ) : (
-        <p>You have not submitted any claims yet.</p>
+        <p>You have not created any claims yet.</p>
       )}
     </div>
   );

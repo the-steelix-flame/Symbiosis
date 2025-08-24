@@ -2,14 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '../../services/firebase';
 import { collection, query, where, getDocs, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
+import './ProjectBoard.css'; // Import the new CSS file
 
-// A new sub-component for managing the task list
+// Sub-component for managing the task list
 const TaskManager = ({ project }) => {
   const [tasks, setTasks] = useState(project.tasks || []);
   const [newTask, setNewTask] = useState('');
 
   const handleAddTask = async () => {
-    if (!newTask) return;
+    if (!newTask.trim()) return;
     const newTaskObj = { description: newTask, isCompleted: false, id: Date.now() };
     const updatedTasks = [...tasks, newTaskObj];
     const projectRef = doc(db, 'projects', project.id);
@@ -28,53 +29,41 @@ const TaskManager = ({ project }) => {
   };
 
   return (
-    <div style={{ marginTop: '15px' }}>
+    <div className="task-manager-container">
       <strong>Workflow / To-Do List:</strong>
-      <div style={{ display: 'flex', gap: '10px', margin: '10px 0' }}>
+      <div className="add-task-form">
         <input 
           type="text" 
           value={newTask} 
           onChange={(e) => setNewTask(e.target.value)} 
           placeholder="New task description" 
-          style={{ flexGrow: 1, padding: '5px' }} 
+          className="add-task-input" 
         />
-        <button onClick={handleAddTask} style={{ padding: '5px 10px' }}>Add Task</button>
+        <button onClick={handleAddTask} className="add-task-button">Add Task</button>
       </div>
-      <div>
+      <ul className="task-list">
         {tasks.map(task => (
-          <div key={task.id}>
+          <li key={task.id} className={`task-item ${task.isCompleted ? 'task-item-completed' : ''}`}>
             <input 
               type="checkbox" 
               checked={task.isCompleted} 
-              onChange={() => handleToggleTask(task.id)} 
+              onChange={() => handleToggleTask(task.id)}
             />
-            <span style={{ textDecoration: task.isCompleted ? 'line-through' : 'none' }}>
-              {task.description}
-            </span>
-          </div>
+            <span>{task.description}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
 
 export default function ProjectBoard() {
-  // ... (State variables and styles remain the same)
-  const styles = {
-    board: { marginTop: '20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' },
-    projectCard: { border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#fafafa' },
-    activeProjectCard: { border: '1px solid #007bff', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f0f8ff' },
-    completedProjectCard: { border: '1px solid #28a745', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f0fff0' },
-    button: { marginTop: '10px', padding: '8px 12px', border: 'none', cursor: 'pointer' },
-    sectionTitle: { borderBottom: '2px solid #eee', paddingBottom: '10px' }
-  };
   const { currentUser } = useAuth();
   const [proposedProjects, setProposedProjects] = useState([]);
   const [activeProjects, setActiveProjects] = useState([]);
   const [completedProjects, setCompletedProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ... (fetchProjects, handleJoinProject, handleLeaveProject, handleResolveProject functions are the same as before)
   const fetchProjects = useCallback(async () => {
     if (!currentUser) return;
     setLoading(true);
@@ -113,37 +102,39 @@ export default function ProjectBoard() {
   if (loading) return <p>Loading project board...</p>;
 
   return (
-    <div style={styles.board}>
+    <div className="project-board">
       <div>
-        <h3 style={styles.sectionTitle}>My Active Projects</h3>
+        <h3>My Active Projects</h3>
         {activeProjects.map(project => (
-          <div key={project.id} style={styles.activeProjectCard}>
+          <div key={project.id} className="active-project-card">
             <h4>{project.title}</h4>
             <p><strong>Duration:</strong> {project.duration}</p>
             <p>{project.description}</p>
-            {/* --- NEW TASK MANAGER COMPONENT --- */}
             <TaskManager project={project} />
-            <button onClick={() => handleResolveProject(project.id)} style={{...styles.button, backgroundColor: '#28a745', color: 'white'}}>Mark as Complete</button>
-            <button onClick={() => handleLeaveProject(project.id)} style={{...styles.button, backgroundColor: '#ffc107', marginLeft: '10px'}}>Leave Project</button>
+            <div className="project-actions">
+              <button onClick={() => handleResolveProject(project.id)} className="action-button complete-button">Mark as Complete</button>
+              <button onClick={() => handleLeaveProject(project.id)} className="action-button leave-button">Leave Project</button>
+            </div>
           </div>
         ))}
       </div>
-      {/* ... (Available and Completed sections remain the same) ... */}
+
       <div>
-        <h3 style={styles.sectionTitle}>Available Projects</h3>
+        <h3>Available Projects</h3>
         {proposedProjects.map(project => (
-          <div key={project.id} style={styles.projectCard}>
+          <div key={project.id} className="project-card">
             <h4>{project.title}</h4>
             <p><strong>Duration:</strong> {project.duration}</p>
             <p>{project.description}</p>
-            <button onClick={() => handleJoinProject(project.id)} style={{...styles.button, backgroundColor: '#17a2b8', color: 'white'}}>Take On Project</button>
+            <button onClick={() => handleJoinProject(project.id)} className="action-button join-button">Take On Project</button>
           </div>
         ))}
       </div>
+
       <div>
-        <h3 style={styles.sectionTitle}>My Completed Projects</h3>
+        <h3>My Completed Projects</h3>
         {completedProjects.map(project => (
-          <div key={project.id} style={styles.completedProjectCard}>
+          <div key={project.id} className="completed-project-card">
             <h4>{project.title}</h4>
             <p><strong>Status:</strong> {project.status}</p>
           </div>
