@@ -26,15 +26,11 @@ const Navbar = () => {
                     {currentUser && userProfile ? (
                         <>
                             <span className="nav-welcome-text">Welcome, {userProfile.name}</span>
-                            <Link to="/dashboard" className="nav-link-dashboard">
-                                Unity Desk
-                            </Link>
+                            <Link to="/dashboard" className="nav-link-dashboard">Unity Desk</Link>
                             {/* --- THIS IS THE FIX: Replaced style={} with className --- */}
-                            <Link to="/threat-radar" className="nav-link-dashboard">Threat Radar</Link>
+                            <Link to="/create-content" className="nav-link-creator">Creator Section</Link>
                             <Link to="/eco-uploads" className="nav-link-dashboard">Eco-Uploads</Link>
-                            <Link to="/create-content" className="nav-link-creator">
-                                Creator Section
-                            </Link>
+                            <Link to="/threat-radar" className="nav-link-dashboard">Threat Radar</Link>
                             <Link to="/track-sdg" className="nav-link-dashboard">Track SDG</Link>
                             <Link to="/analysis" className="nav-link-dashboard">Analysis</Link>
                             <Link to="/profile" className="nav-link-dashboard">Profile</Link>

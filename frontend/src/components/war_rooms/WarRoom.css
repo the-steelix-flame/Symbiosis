@@ -1,71 +1,90 @@
 /* Main container for all war room pages */
 .war-room-container {
-    padding-top: 50px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    color: #fff;
+    /* CHANGE 1: Added background image */
+    background-image: url(/public/LOGIN.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background static when scrolling */
+    
+    color: #ffffff; /* Set default text color to white for readability */
+    padding: 2rem;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .war-room-container h1 {
     text-align: center;
     margin-bottom: 1.5rem;
-    font-size: 2.5rem;
+    font-size: 3.5rem;
+    color: #ffffff;
+    padding-top: 60px;
 }
 
-/* Styles for ResearcherWarRoom */
+.war-room-container p {
+    text-align: center;
+    color: #e2e8f0; /* Lighter text for paragraphs */
+    max-width: 600px;
+    margin: 0 auto 1.5rem auto;
+}
+
 .section-title {
     font-size: 1.8rem;
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #4a5568; /* Green to match theme */
     padding-bottom: 10px;
     margin-top: 40px;
     margin-bottom: 20px;
+    color: #ffffff;
 }
 
-.claims-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
-}
-
-/* --- NEW: Styles for GovernmentWarRoom Project List --- */
+/* --- CHANGE 2: Updated card style for a blurry, "glass" effect --- */
 .project-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    margin: 15px 0;
-    border-radius: 8px;
+    background: rgba(13, 31, 51, 0.85); /* Dark blue, semi-transparent */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px;
+    margin: 20px 0;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px); /* The blur effect */
 }
 
 .project-card h3, .project-card h4 {
     margin-top: 0;
+    color: #ffffff; /* White text for titles */
 }
 
 .project-card p {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    text-align: left;
+    color: #e2e8f0; /* Light grey text for descriptions */
 }
 
+/* Grid container for project cards */
+.projects-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 32px;
+}
+
+/* Buttons are now all green */
 .action-button {
-    padding: 8px 12px;
-    border-radius: 5px;
+    padding: 10px 16px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
     margin-right: 10px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: white;
+    background-color: #22C55E;
+    transition: background-color 0.3s ease;
 }
 
-.edit-button {
-    background-color: #007bff;
-    color: white;
+.action-button:hover {
+    background-color: #16A34A;
 }
 
-.delete-button {
-    background-color: #dc3545;
-    color: white;
-}
+.edit-button, .delete-button { }
 
 .cancel-button {
-    background-color: #6c757d;
-    color: white;
     margin-top: 10px;
 }

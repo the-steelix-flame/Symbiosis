@@ -4,6 +4,7 @@ import MyProjectsList from './MyProjectsList';
 import ClaimChallengeList from './ClaimChallengeList';
 import QuizGame from '../gamification/QuizGame'; // 1. Import the QuizGame component
 import './WarRoom.css';
+// import './ProjectLists.css';
 
 export default function StudentWarRoom() {
   return (

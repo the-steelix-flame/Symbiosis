@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import './AnalysisPage.css'; // Import the new modern CSS
+import './AnalysisPage.css';
 
-// Placeholder component to show before analysis is generated
 const AnalysisPlaceholder = () => (
     <div className="analysis-result-placeholder">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20V16"/></svg>
@@ -36,7 +35,6 @@ export default function AnalysisPage() {
 
     return (
         <div className="analysis-page">
-            {/* Left Panel for Controls */}
             <aside className="analysis-controls">
                 <div className="analysis-header">
                     <h1>Global Data Analysis</h1>
@@ -53,7 +51,6 @@ export default function AnalysisPage() {
                 </div>
             </aside>
 
-            {/* Right Panel for Results */}
             <main className="analysis-content">
                 {isLoading && <div className="loader"></div>}
                 

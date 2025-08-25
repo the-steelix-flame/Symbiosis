@@ -1,0 +1,13 @@
+.threat-radar-page-container {
+    /* Applies the background image */
+    background-image: url(/public/LOGIN.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    
+    /* Adds padding to the content inside */
+    /* padding: 2rem; */
+    /* padding-top: 0px; */
+    box-sizing: border-box;
+}

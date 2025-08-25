@@ -3,7 +3,7 @@ import { db } from '../../services/firebase';
 import { collection, query, where, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectForm from './CreateProjectForm';
-import ClaimChallengeList from './ClaimChallengeList'; // 1. Import the component
+import ClaimChallengeList from './ClaimChallengeList';
 import './WarRoom.css';
 
 const getProgress = (project) => {
@@ -11,7 +11,8 @@ const getProgress = (project) => {
     return "No tasks assigned yet.";
   }
   const completed = project.tasks.filter(task => task.isCompleted).length;
-  return '${completed} / ${project.tasks.length} tasks complete';
+  // This line is now corrected to use backticks for template literals
+  return `${completed} / ${project.tasks.length} tasks complete`;
 };
 
 export default function GovernmentWarRoom() {
@@ -79,20 +80,21 @@ export default function GovernmentWarRoom() {
 
       <h3>My Proposals</h3>
       {loading ? <p>Loading your projects...</p> : (
-        myProjects.map(project => (
-          <div key={project.id} className="project-card">
-            <h4>{project.title}</h4>
-            <p><strong>Category:</strong> {project.category}</p>
-            <p><strong>Status:</strong> {project.status}</p>
-            <p><strong>Team Members:</strong> {project.teamMembers.length}</p>
-            <p><strong>Progress:</strong> {getProgress(project)}</p>
-            <button onClick={() => handleEdit(project)} className="action-button edit-button">Edit</button>
-            <button onClick={() => handleDelete(project.id)} className="action-button delete-button">Delete</button>
-          </div>
-        ))
+        <div className="projects-grid-container"> 
+          {myProjects.map(project => (
+            <div key={project.id} className="project-card">
+              <h4>{project.title}</h4>
+              <p><strong>Category:</strong> {project.category}</p>
+              <p><strong>Status:</strong> {project.status}</p>
+              <p><strong>Team Members:</strong> {project.teamMembers.length}</p>
+              <p><strong>Progress:</strong> {getProgress(project)}</p>
+              <button onClick={() => handleEdit(project)} className="action-button edit-button">Edit</button>
+              <button onClick={() => handleDelete(project.id)} className="action-button delete-button">Delete</button>
+            </div>
+          ))}
+        </div>
       )}
       
-      {/* 2. Add the component here */}
       <ClaimChallengeList />
     </div>
   );

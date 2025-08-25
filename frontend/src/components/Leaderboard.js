@@ -29,7 +29,7 @@ const Leaderboard = () => {
     const getBadge = (rank) => {
         if (rank === 0) return <img src="/gold.png" alt="Gold Badge" className="badge-icon" />;
         if (rank === 1) return <img src="/silver.png" alt="Silver Badge" className="badge-icon" />;
-        if (rank === 2) return <img src="/brownz.png" alt="Bronze Badge" className="badge-icon" />;
+        if (rank === 2) return <img src="/bronze.png" alt="Bronze Badge" className="badge-icon" />;
         return null;
     };
 

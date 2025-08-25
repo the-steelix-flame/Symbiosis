@@ -1,78 +1,70 @@
-/* HomePage.css - Modern Content Creation Page Styles */
-
-/* --- Layout --- */
+/* --- MAIN PAGE LAYOUT --- */
 .home-container1 {
-    font-family: 'Inter', sans-serif;
-    background: #051721;
-    color: #121820;
+    background-image: url(/public/LOGIN.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
+    padding: 2rem;
+    padding-top: 120px;
+    box-sizing: border-box;
 }
 
+/* --- FORM CONTAINER (BLURRY CARD) --- */
 .hero-section1 {
     max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-    background: #082332;
-    border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    padding: 30px 40px;
+    background: rgba(13, 31, 51, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .hero-section1 h1 {
-    position: center;
-    font-size: 2rem;
+    text-align: center;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #fefefe;
     margin-bottom: 0.5rem;
-}   
+}
 
 .hero-section1 .subtitle {
-    font-size: 1rem;
+    text-align: center;
+    font-size: 1.1rem;
     color: #c9ccd1;
     margin-bottom: 2rem;
 }
 
-/* --- Form --- */
+/* --- FORM STYLES --- */
 .content-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-bottom: 2.5rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
 }
 
 .form-group label {
     font-weight: 600;
-    color: #858b94;
+    color: #e2e8f0;
 }
 
 .content-form select,
 .content-form textarea,
 .content-form input[type="url"],
 .content-form input[type="file"] {
+    width: 100%;
     padding: 0.75rem;
-    border: 1px solid #e6eaef;
-    border-radius: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #4A5568;
+    background-color: #1A202C;
+    color: #FFFFFF;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.content-form select:focus,
-.content-form textarea:focus,
-.content-form input[type="url"]:focus,
-.content-form input[type="file"]:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-    outline: none;
-}
-
-/* --- Buttons --- */
+/* --- BUTTON --- */
 .cta-button {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background-color: #22C55E; /* Green */
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -80,61 +72,49 @@
     border: none;
     border-radius: 0.75rem;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
 }
 
-.cta-button:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
-    transform: translateY(-1px);
-}
-
-.cta-button:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
-}
-
-/* --- Alerts --- */
+/* --- SUCCESS & ERROR MESSAGES --- */
 .error-message {
-    color: #b91c1c;
-    background: #fee2e2;
-    border-left: 4px solid #dc2626;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
+    color: #f87171;
+    font-weight: 500;
 }
 
 .success-message {
-    color: #065f46;
-    background: #d1fae5;
-    border-left: 4px solid #059669;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
+    color: #4ade80;
+    font-weight: 500;
 }
 
-/* --- Posts Feed --- */
+/* --- POSTS FEED --- */
 .posts-feed {
-    margin-top: 2.5rem;
+    max-width: 1400px;
+    margin: 2.5rem auto;
 }
 
 .posts-feed h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 2rem;
     color: #f9f9fa;
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
-.posts-feed p {
-    color: #6b7280;
+/* --- GRID FOR POSTS --- */
+.posts-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 32px;
+    align-items: start; /* This fixes the extra space issue */
 }
 
-/* --- Responsive --- */
-@media (max-width: 768px) {
-    .hero-section {
-        padding: 1.5rem 1rem 3rem;
-    }
+/* --- IMAGE PREVIEW --- */
+.image-preview {
+    margin-top: 1rem;
+    text-align: center;
+}
 
-    .hero-section h1 {
-        font-size: 1.5rem;
-    }
+.image-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid #4A5568;
 }

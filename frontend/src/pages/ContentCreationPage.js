@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react'; // <--- useRef has been removed from this line
 import { useParams, useLocation } from 'react-router-dom';
 import { db } from '../services/firebase';
 import { doc, getDoc, collection, addDoc, serverTimestamp, updateDoc, increment, query, orderBy, getDocs, deleteDoc } from 'firebase/firestore';
@@ -10,14 +10,15 @@ export default function ContentCreationPage() {
     const { claimId } = useParams();
     const location = useLocation();
     const { currentUser, userProfile } = useAuth();
-    const fileInputRef = useRef(null);
+    // const fileInputRef = useRef(null); // <--- This line has been removed
 
     // Form state
     const [claimText, setClaimText] = useState('');
     const [contentType, setContentType] = useState('Short');
     const [youtubeLink, setYoutubeLink] = useState('');
     const [description, setDescription] = useState('');
-    const [imageFile, setImageFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -53,12 +54,6 @@ export default function ContentCreationPage() {
         fetchPosts();
     }, [claimId, location.state]);
 
-    const handleFileChange = (e) => {
-        if (e.target.files[0]) {
-            setImageFile(e.target.files[0]);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!description) {
@@ -68,25 +63,8 @@ export default function ContentCreationPage() {
         setLoading(true);
         setError('');
         setSuccess('');
-        let finalImageUrl = '';
 
         try {
-            if (contentType === 'Meme' && imageFile) {
-                const formData = new FormData();
-                formData.append('file', imageFile);
-                formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-                const response = await fetch(
-                    'https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload',
-                    { method: 'POST', body: formData }
-                );
-                const data = await response.json();
-                if (data.secure_url) {
-                    finalImageUrl = data.secure_url;
-                } else {
-                    throw new Error('Image upload failed.');
-                }
-            }
-
             await addDoc(collection(db, "content"), {
                 createdBy: currentUser.uid,
                 creatorName: userProfile.name,
@@ -94,7 +72,7 @@ export default function ContentCreationPage() {
                 claimText: claimText || 'General Submission',
                 contentType,
                 youtubeLink: contentType === 'Short' ? youtubeLink : '',
-                imageUrl: finalImageUrl,
+                imageUrl: contentType === 'Meme' ? imageUrl : '',
                 description,
                 likes: 0,
                 comments: [],
@@ -107,11 +85,8 @@ export default function ContentCreationPage() {
 
             setSuccess('Content posted successfully! You earned 5 points.');
             setYoutubeLink('');
-            setImageFile(null);
+            setImageUrl('');
             setDescription('');
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
             fetchPosts();
 
         } catch (err) {
@@ -135,17 +110,16 @@ export default function ContentCreationPage() {
 
     return (
         <div className="home-container1">
-            <main className="hero-section1" style={{ paddingTop: '120px' }}>
+            <main className="hero-section1">
                 <h1>Creator Section</h1>
                 <p className="subtitle">
-                    {claimId ? 'Creating content for the claim: "${claimText}"' : 'Share your own science-backed Short or Meme!'}
+                    {claimId ? `Creating content for the claim: "${claimText}"` : 'Share your own science-backed Short or Meme!'}
                 </p>
 
                 <form onSubmit={handleSubmit} className="content-form">
-                    {/* --- FIX: Display error and success messages here --- */}
                     {error && <p className="error-message">{error}</p>}
                     {success && <p className="success-message">{success}</p>}
-
+                    
                     <div className="form-group">
                         <label>Content Type</label>
                         <select value={contentType} onChange={(e) => setContentType(e.target.value)}>
@@ -153,6 +127,7 @@ export default function ContentCreationPage() {
                             <option value="Meme">Meme</option>
                         </select>
                     </div>
+
                     <div className="form-group">
                         <label>Description</label>
                         <textarea 
@@ -162,7 +137,8 @@ export default function ContentCreationPage() {
                             required
                         />
                     </div>
-                    {contentType === 'Short' && (
+                    
+                    {contentType === 'Short' ? (
                         <div className="form-group">
                             <label>YouTube Video Link</label>
                             <input 
@@ -172,40 +148,40 @@ export default function ContentCreationPage() {
                                 placeholder="https://www.youtube.com/watch?v=..."
                             />
                         </div>
-                    )}
-                    {contentType === 'Meme' && (
+                    ) : (
                         <div className="form-group">
-                            <label>Upload Image</label>
+                            <label>Image URL</label>
                             <input 
-                                type="file"
-                                onChange={handleFileChange}
-                                accept="image/*"
-                                ref={fileInputRef}
+                                type="url"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                placeholder="https://example.com/image.png"
                             />
                         </div>
                     )}
+                    
                     <button type="submit" disabled={loading} className="cta-button">
-                        {loading ? 'Uploading...' : 'Post and Earn 5 Points'}
+                        {loading ? 'Posting...' : 'Post and Earn 5 Points'}
                     </button>
                 </form>
+            </main>
 
-                <div className="posts-feed">
-                    <h2 style={{ marginTop: '3rem', borderTop: '1px solid #4a5568', paddingTop: '2rem' }}>
-                        Latest Content
-                    </h2>
-                    {postsLoading ? (
-                        <p>Loading content feed...</p>
-                    ) : (
-                        posts.map(post => 
+            <div className="posts-feed">
+                <h2>Latest Content</h2>
+                {postsLoading ? (
+                    <p>Loading content feed...</p>
+                ) : (
+                    <div className="posts-grid-container">
+                        {posts.map(post => 
                             <ContentPost 
                                 key={post.id} 
                                 post={post} 
                                 onDeletePost={handleDeletePost} 
                             />
-                        )
-                    )}
-                </div>
-            </main>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

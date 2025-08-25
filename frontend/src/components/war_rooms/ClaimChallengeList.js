@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../services/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import './ClaimChallengeList.css'; 
 
 export default function ClaimChallengeList() {
@@ -27,18 +27,36 @@ export default function ClaimChallengeList() {
         <div key={claim.id} className="claim-card">
           <p>"{claim.claimText}"</p>
           <small>From a paper by: {claim.creatorName}</small>
-          <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
-            {/* --- BUTTONS UPDATED --- */}
-            <Link to={'/create-content/${claim.id}'} state={{ type: 'Short' }} className="claim-action-button">
-              Create Shorts for this Claim
-            </Link>
-            <Link to={'/create-content/${claim.id}'} state={{ type: 'Meme' }} className="claim-action-button" style={{backgroundColor: '#dd6b20'}}>
-              Create Meme for this Claim
-            </Link>
+          
+          {/* --- THIS IS THE FIX: Buttons are now in the correct two-row layout --- */}
+          <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            
+            {/* First Row: View Paper Button */}
+            <div>
+              <a 
+                href={claim.sourcePaperURL} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="claim-action-button"
+                style={{ width: '100%' }} // Make the button full-width
+              >
+                View Supporting Paper
+              </a>
+            </div>
+
+            {/* Second Row: Create Content Buttons */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <Link to={`/create-content/${claim.id}`} state={{ type: 'Short' }} className="claim-action-button" style={{ flex: 1 }}>
+                Create Shorts for this Claim
+              </Link>
+              <Link to={`/create-content/${claim.id}`} state={{ type: 'Meme' }} className="claim-action-button" style={{ flex: 1 }}>
+                Create Meme for this Claim
+              </Link>
+            </div>
+
           </div>
         </div>
       )) : <p>No new claims available. Check back soon!</p>}
     </div>
   );
 }
-

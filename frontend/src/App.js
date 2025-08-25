@@ -14,46 +14,47 @@ import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import AnalysisPage from './pages/AnalysisPage';
 import ThreatRadarPage from './pages/ThreatRadarPage';
-import EcoUploadsPage from './pages/EcoUploadsPage'; // This import is likely already here
+import EcoUploadsPage from './pages/EcoUploadsPage';
 import TrackSdgPage from './pages/TrackSdgPage';
 import ContentCreationPage from './pages/ContentCreationPage';
+import './App.css'; // Make sure this line is here
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Navbar />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
+        {/* V-- Add this div wrapper --V */}
+        <div className="main-content">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Protected Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          
-          {/* --- NEW DIRECT ROUTE FOR CREATOR SECTION --- */}
-          <Route path="/create-content" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
-          <Route
-            path="/threat-radar"
-            element={ <ProtectedRoute> <ThreatRadarPage /> </ProtectedRoute> }
-          />
-          <Route path="/analysis" element={<AnalysisPage />} />
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            
+            <Route path="/create-content" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
+            <Route
+              path="/threat-radar"
+              element={ <ProtectedRoute> <ThreatRadarPage /> </ProtectedRoute> }
+            />
+            <Route path="/analysis" element={<AnalysisPage />} />
 
-          {/* THIS IS THE MISSING PART 👇 */}
-          <Route
-            path="/eco-uploads" // Change this path
-            element={
-              <ProtectedRoute>
-                <EcoUploadsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/track-sdg" element={<TrackSdgPage />} />
-          {/* Route for creating content from a specific claim */}
-          <Route path="/create-content/:claimId" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
-        </Routes>
+            <Route
+              path="/eco-uploads"
+              element={
+                <ProtectedRoute>
+                  <EcoUploadsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/track-sdg" element={<TrackSdgPage />} />
+            <Route path="/create-content/:claimId" element={<ProtectedRoute><ContentCreationPage /></ProtectedRoute>} />
+          </Routes>
+        </div>
       </Router>
     </AuthProvider>
   );

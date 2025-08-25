@@ -1,6 +1,8 @@
 .project-list-container {
     width: 100%;
     margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-list-container h3 {
@@ -11,11 +13,18 @@
     padding-bottom: 10px;
 }
 
-/* --- Main Grid Layout --- */
+/* --- Main Grid Layout for the whole page --- */
 .project-list-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 40px;
+    align-items: start;
+}
+
+/* --- Grid for cards inside each category --- */
+.project-grid {
+    display: grid;
+    gap: 20px;
 }
 
 /* --- Shared Project Card Style --- */
@@ -27,6 +36,8 @@
     color: #e2e8f0;
     display: flex;
     flex-direction: column;
+    height: 100%; 
+    width: fit-content;
 }
 
 .list-project-card h4 {
@@ -39,9 +50,8 @@
     margin: 4px 0;
 }
 
-/* --- Card Content --- */
 .card-content {
-    flex-grow: 1; /* Pushes button to the bottom */
+    flex-grow: 1;
 }
 
 .skills-container {
@@ -60,7 +70,6 @@
     font-size: 0.9rem;
 }
 
-/* --- Action Buttons --- */
 .list-action-button {
     margin-top: 15px;
     padding: 10px 15px;
@@ -70,22 +79,10 @@
     cursor: pointer;
     font-weight: bold;
     text-align: center;
-    width: 100%; /* Make buttons full width */
+    width: 100%;
 }
 
-.join-button {
-    background-color: #17a2b8;
-}
-
-.withdraw-button {
-    background-color: #dc3545;
-}
-
-.leave-button {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-.list-action-button:hover {
-    opacity: 0.9;
-}
+.join-button { background-color: #17a2b8; }
+.withdraw-button { background-color: #38a169; }
+.leave-button { background-color: #38a169; color: #212529; }
+.list-action-button:hover { opacity: 0.9; }

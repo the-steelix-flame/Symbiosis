@@ -26,7 +26,7 @@ export default function MyProjectsList() {
   }, [fetchMyProjects]);
 
   const handleLeaveProject = async (projectId) => {
-     if (!currentUser) return;
+      if (!currentUser) return;
     const projectRef = doc(db, 'projects', projectId);
     await updateDoc(projectRef, {
       teamMembers: arrayRemove(currentUser.uid)
@@ -36,12 +36,24 @@ export default function MyProjectsList() {
 
   if (loading) return <p>Loading your projects...</p>;
   if (!currentUser) return null;
+  // If the user has no joined projects, we can hide this section entirely.
+  if (myProjects.length === 0) {
+      return (
+        <div className="project-list-container">
+            <h3>My Joined Projects</h3>
+            <p>You haven't joined any projects yet.</p>
+        </div>
+      );
+  }
 
   return (
     <div className="project-list-container">
       <h3>My Joined Projects</h3>
+      {/* THIS IS THE ONLY CHANGE NEEDED.
+        The div below wraps your project cards in a grid.
+      */}
       <div className="project-grid">
-        {myProjects.length > 0 ? myProjects.map(project => (
+        {myProjects.map(project => (
           <div key={project.id} className="list-project-card">
             <div className="card-content">
               <h4>{project.title}</h4>
@@ -52,7 +64,7 @@ export default function MyProjectsList() {
               Leave Project
             </button>
           </div>
-        )) : <p>You haven't joined any projects yet.</p>}
+        ))}
       </div>
     </div>
   );

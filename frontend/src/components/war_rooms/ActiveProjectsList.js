@@ -10,7 +10,8 @@ const getProgress = (project) => {
     return "No tasks assigned yet.";
   }
   const completed = project.tasks.filter(task => task.isCompleted).length;
-  return '${completed} / ${project.tasks.length} tasks complete';
+  // BUG FIX: Changed single quotes to backticks for the template literal to work
+  return `${completed} / ${project.tasks.length} tasks complete`;
 };
 
 export default function ActiveProjectsList() {
