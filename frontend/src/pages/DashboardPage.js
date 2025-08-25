@@ -30,10 +30,10 @@ export default function DashboardPage() {
     }
   };
 
-  const containerStyle = { padding: '20px' };
-
+  // The 'containerStyle' object has been removed.
+  // The returned div no longer has the inline style.
   return (
-    <div style={containerStyle}>
+    <div>
       {renderWarRoom()}
     </div>
   );

@@ -8,7 +8,7 @@ const styles = {
   form: { display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px', padding: '20px', border: '1px solid #eee' },
   input: { padding: '8px', fontSize: '1rem' },
   select: { padding: '8px', fontSize: '1rem' },
-  button: { padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' },
+  button: { padding: '10px', backgroundColor: '#22C55E', color: 'white', border: 'none', cursor: 'pointer' },
   skillsContainer: { display: 'flex', flexWrap: 'wrap', gap: '5px', padding: '5px 0' },
   skillTag: { background: '#6c757d', color: 'white', padding: '3px 8px', borderRadius: '10px', fontSize: '0.9rem' },
 };

@@ -6,8 +6,8 @@ import ClaimCreator from './ClaimCreator';
 import MyClaimsList from './MyClaimsList';
 import MyProjectsList from './MyProjectsList';
 import ActiveProjectsList from './ActiveProjectsList';
-import ClaimChallengeList from './ClaimChallengeList';
-import QuizGame from '../gamification/QuizGame'; // 1. Import the QuizGame component
+// import ClaimChallengeList from './ClaimChallengeList';
+import QuizGame from '../gamification/QuizGame'; 
 import './WarRoom.css';
 
 export default function ResearcherWarRoom() {
@@ -70,13 +70,13 @@ export default function ResearcherWarRoom() {
         />
       </div>
 
-      <ClaimChallengeList />
+      {/* --- THIS IS THE CHANGE: The "Challenges" section is now commented out --- */}
+      {/* <ClaimChallengeList /> */}
       
       <h2 className="section-title">Project Collaboration</h2>
       <MyProjectsList />
       <ActiveProjectsList />
 
-      {/* 2. Add the QuizGame component here */}
       <QuizGame />
     </div>
   );

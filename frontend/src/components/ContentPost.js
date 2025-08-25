@@ -18,7 +18,8 @@ const getYouTubeEmbedUrl = (url) => {
         const match = url.match(/(?:v=|\/embed\/|\.be\/)([^&?#]+)/);
         if (match) videoId = match[1];
     }
-    return videoId ? 'https://www.youtube.com/embed/${videoId}' : null;
+    // THIS IS THE FIX: Changed single quotes to backticks (`)
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
 };
 
 // Now accepts onDeletePost as a prop

@@ -1,18 +1,18 @@
 .content-post {
     background-color: #2d3748;
     border: 1px solid #4a5568;
-    border-radius: 8px;
-    max-width: 600px;
-    margin: 2rem auto;
+    border-radius: 16px;
     color: #e2e8f0;
-    position: relative; /* Needed for positioning the delete button */
+    position: relative; /* This is crucial for the delete button's position */
+    display: flex;
+    flex-direction: column;
 }
 
-/* --- NEW: Delete Button --- */
+/* --- THIS IS THE FIX: Adjusted the delete button styles --- */
 .delete-post-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     background: #4a5568;
     color: #fff;
     border: none;
@@ -26,6 +26,7 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
+    z-index: 10; /* This ensures the button is on top of other content */
 }
 .delete-post-button:hover {
     background-color: #dc3545;
@@ -33,7 +34,7 @@
 
 
 .post-header {
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid #4a5568;
 }
 
@@ -48,7 +49,8 @@
 }
 
 .post-body {
-    padding: 1rem;
+    padding: 1.5rem;
+    flex-grow: 1;
 }
 
 .post-claim-text {
@@ -66,7 +68,7 @@
 
 .post-media-short {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%; /* 16:9 */
     height: 0;
     overflow: hidden;
     margin-top: 1rem;
@@ -83,13 +85,13 @@
 
 .post-media-meme img {
     max-width: 100%;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-top: 1rem;
     display: block;
 }
 
 .post-footer {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     border-top: 1px solid #4a5568;
     display: flex;
     gap: 1rem;
@@ -109,12 +111,12 @@
 }
 
 .footer-button.liked {
-    color: #38a169; /* Green when liked */
+    color: #38a169;
     font-weight: bold;
 }
 
 .comments-section {
-    padding: 0 1rem 1rem;
+    padding: 0 1.5rem 1.5rem;
 }
 
 .comment-form {
@@ -136,7 +138,7 @@
     padding: 0.5rem 1rem;
     border-radius: 4px;
     border: none;
-    background-color: #38a169;
+    background-color: #22C55E;
     color: #fff;
     cursor: pointer;
 }

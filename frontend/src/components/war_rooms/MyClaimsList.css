@@ -1,18 +1,33 @@
 .my-claims-container {
-    border-left: 2px solid #007bff;
-    padding-left: 20px;
-    height: 100%; /* Ensures container takes up space */
+    /* This container now just holds the title and the grid */
+    height: 100%;
 }
 
 .my-claims-container h3 {
     color: #fff;
     margin-top: 0;
+    margin-bottom: 20px; /* Add space below the title */
 }
 
+/* This is the new grid that will arrange your cards */
+.my-claims-grid {
+    display: grid;
+    /* Creates columns of cards that fit their content, with a minimum size */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; /* This creates the margin/space between cards */
+}
+
+/* --- Card styles updated to match your request --- */
 .my-claim-item {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #4a5568;
+    background-color: #4a5568; /* The background color you wanted */
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: auto; /* Allow the grid to control the width */
+}
+
+.my-claim-item:last-child {
+    border-bottom: none;
 }
 
 .my-claim-title {
@@ -47,11 +62,4 @@
 
 .delete-claim-button:hover {
     background-color: #c82333;
-}
-
-/* Styles for the My Claims List */
-.my-claims-list {
-    margin-top: 25px;
-    padding-top: 15px;
-    border-top: 1px solid #e2e8f0;
 }

@@ -18,6 +18,7 @@
     background-color: #2d3748; /* Darker card background */
     border: 1px solid #4a5568;
     color: #e2e8f0; /* Light text for dark cards */
+    margin: 20px 0;
 }
 
 .project-card h4, .active-project-card h4, .completed-project-card h4 {

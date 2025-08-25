@@ -1,33 +1,47 @@
-/* Main container for the profile page */
+/* --- UPDATED: Main container for the profile page --- */
 .profile-page-container {
-    max-width: 700px;
+    /* Added the background image */
+    background-image: url(/public/LOGIN.png);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 120px 2rem 2rem 2rem; /* Added more top padding */
+    box-sizing: border-box;
+}
+
+/* NEW: Inner wrapper to center the content */
+.profile-content-wrapper {
+    max-width: 800px;
     margin: 0 auto;
-    padding: 100px 2rem 2rem 2rem; /* 100px top padding to clear navbar */
-    color: #fff; /* White text for dark background */
 }
 
 .profile-page-container h2 {
     text-align: center;
     margin-bottom: 2rem;
     font-size: 2.5rem;
+    color: #ffffff; /* White text */
 }
 
+/* --- UPDATED: Info cards to be blurry and semi-transparent --- */
 .info-group {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 20px;
+    background: rgba(13, 31, 51, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 20px;
+    backdrop-filter: blur(10px);
 }
 
 .info-group p {
     font-size: 1.1rem;
     line-height: 1.6;
+    color: #e2e8f0; /* Light text for readability */
 }
 
 .info-label {
     font-weight: bold;
-    color: #a0a0a0; /* Lighter grey for labels */
+    color: #a0aec0; /* Lighter grey for labels */
     margin-right: 10px;
 }
 
@@ -39,7 +53,7 @@
 }
 
 .skill-tag {
-    background: #007bff;
+    background: #4A5568; /* Muted background for skills */
     color: white;
     padding: 8px 15px;
     border-radius: 20px;
@@ -50,7 +64,7 @@
 
 .remove-skill-btn {
     margin-left: 10px;
-    background: #dc3545;
+    background: #718096;
     color: white;
     border: none;
     border-radius: 50%;
@@ -62,6 +76,9 @@
     align-items: center;
     justify-content: center;
 }
+.remove-skill-btn:hover {
+    background: #dc3545;
+}
 
 .input-group {
     display: flex;
@@ -69,14 +86,15 @@
     margin-top: 15px;
 }
 
+/* --- UPDATED: Form elements for dark theme --- */
 .skill-input,
 .bio-textarea {
     width: 100%;
     padding: 12px;
-    border-radius: 4px;
-    border: 1px solid #444;
-    background-color: #333;
-    color: #fff;
+    border-radius: 6px;
+    border: 1px solid #4A5568;
+    background-color: #1A202C;
+    color: #FFFFFF;
     font-size: 1rem;
 }
 
@@ -87,7 +105,7 @@
 
 .profile-button {
     padding: 12px 18px;
-    background-color: #28a745;
+    background-color: #22C55E; /* Green button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -97,7 +115,7 @@
 }
 
 .profile-button:hover {
-    background-color: #218838;
+    background-color: #16A34A; /* Darker green */
 }
 
 .loading-text,
@@ -105,8 +123,9 @@
     text-align: center;
     font-size: 1.2rem;
     padding-top: 100px;
+    color: #fff; /* White text */
 }
 
 .error-text {
-    color: #dc3545;
+    color: #f87171; /* Lighter red */
 }
