@@ -60,7 +60,7 @@ const themes = {
     },
     satellite: {
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-	    attribution: 'Tiles &copy; Esri'
+        attribution: 'Tiles &copy; Esri'
     }
 };
 
@@ -102,10 +102,10 @@ export default function ThreatRadar() {
     const [loading, setLoading] = useState(true);
     const [selectedThreat, setSelectedThreat] = useState(null);
     const [regionalWeather, setRegionalWeather] = useState(null);
-    
+
     // IMPORTANT: Replace this with your actual key.
-    const OPENWEATHER_API_KEY = "your_openweathermap_api_key";
-    const NASA_API_KEY = "RV0agcITHMO3MsZh7dp298gP12Xa0MLylGma32P4";
+    const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+    const NASA_API_KEY = process.env.NASA_API_KEY;
 
 
     const weatherLayer = useMemo(() => (
@@ -116,12 +116,12 @@ export default function ThreatRadar() {
     ), [OPENWEATHER_API_KEY]);
 
     const ghgLayer = useMemo(() => (
-    <TileLayer
-        url={`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MLS_CO_215hPa_Day/default/EPSG3857_1km/{z}/{y}/{x}.png?api_key=${NASA_API_KEY}`}
-        opacity={10} // Adjust for better blending
-        attribution='&copy; NASA Global Imagery Browse Services (GIBS)'
-    />
-), [NASA_API_KEY]);
+        <TileLayer
+            url={`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MLS_CO_215hPa_Day/default/EPSG3857_1km/{z}/{y}/{x}.png?api_key=${NASA_API_KEY}`}
+            opacity={10} // Adjust for better blending
+            attribution='&copy; NASA Global Imagery Browse Services (GIBS)'
+        />
+    ), [NASA_API_KEY]);
 
 
     useEffect(() => {
@@ -130,11 +130,11 @@ export default function ThreatRadar() {
             try {
                 // Fetch all data sources in parallel for maximum speed
                 const responses = await Promise.all([
-                    fetch('http://localhost:8000/api/threats'),
-                    fetch('http://localhost:8000/api/predictions/deforestation'),
-                    fetch('http://localhost:8000/api/predictions/plastic'),
-                    fetch('http://localhost:8000/api/predictions/coral'),
-                    fetch('http://localhost:8000/api/eco-uploads')
+                    fetch('/api/threats'),
+                    fetch('/api/predictions/deforestation'),
+                    fetch('/api/predictions/plastic'),
+                    fetch('/api/predictions/coral'),
+                    fetch('/api/eco-uploads')
                 ]);
 
                 // Process the real threat data
@@ -184,19 +184,19 @@ export default function ThreatRadar() {
     const handleMarkerClick = (threat) => {
         setSelectedThreat(threat);
     };
-    
+
     const closeDashboard = () => {
         setSelectedThreat(null);
         setRegionalWeather(null);
     };
-    
+
     const isDashboardVisible = selectedThreat || regionalWeather;
 
     if (loading) return <p>Loading Threat Radar...</p>;
 
     return (
         <div>
-            
+
             <div className="map-container">
                 <MapContainer center={[20.5937, 78.9629]} zoom={5} style={{ height: '100%', width: '100%' }}>
                     <h2>Environmental Threat Radar</h2>
@@ -208,7 +208,7 @@ export default function ThreatRadar() {
                             <TileLayer url={themes.light.url} attribution={themes.light.attribution} />
                         </LayersControl.BaseLayer>
                         <LayersControl.BaseLayer name="Satellite">
-                             <TileLayer url={themes.satellite.url} attribution={themes.satellite.attribution} />
+                            <TileLayer url={themes.satellite.url} attribution={themes.satellite.attribution} />
                         </LayersControl.BaseLayer>
                         <LayersControl.Overlay name="Weather Radar">
                             {weatherLayer}
@@ -217,9 +217,9 @@ export default function ThreatRadar() {
                             {ghgLayer}
                         </LayersControl.Overlay>
                     </LayersControl>
-                    
+
                     <MapEvents onViewportChange={handleViewportChange} onMapClick={handleMapClick} />
-                    
+
                     {/* Render markers for validated reports */}
                     {threats.filter(threat => threat.lat && threat.lng).map(threat => (
                         <Marker
@@ -250,12 +250,12 @@ export default function ThreatRadar() {
                         ><Popup>{upload.title}</Popup></Marker>
                     ))}
                 </MapContainer>
-                
+
                 <Legend />
 
                 {isDashboardVisible && (
-                    <ThreatDashboard 
-                        threat={selectedThreat} 
+                    <ThreatDashboard
+                        threat={selectedThreat}
                         closeDashboard={closeDashboard}
                         regionalWeather={regionalWeather}
                     />
