@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
-import L from 'leaflet';
+
 import 'leaflet/dist/leaflet.css';
 import './TrackSdgPage.css';
 import { API_BASE_URL } from '../apiConfig';

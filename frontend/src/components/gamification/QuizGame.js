@@ -63,7 +63,7 @@ export default function QuizGame() {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
                 headers: {
-                    "Authorization": 'Bearer ${API_KEY}',
+                    "Authorization": `Bearer ${API_KEY}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
@@ -77,7 +77,7 @@ export default function QuizGame() {
 
             if (!response.ok) {
                 // If the API request fails, we'll use our fallback questions
-                throw new Error('API request failed with status ${response.status}');
+                throw new Error(`API request failed with status ${response.status}`);
             }
 
             const data = await response.json();

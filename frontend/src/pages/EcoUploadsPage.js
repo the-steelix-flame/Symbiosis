@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../services/firebase';
 import { collection, addDoc, query, where, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import EXIF from 'exif-js';
-import { getDistance } from 'geolib';
+
 import './EcoUploadsPage.css';
 
 
@@ -145,8 +145,8 @@ const UploaderAndCapture = () => {
         resetState();
         setIsSubmitting(true);
         try {
-            const userLocation = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
-            const userCoords = { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude };
+            // const userLocation = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+            // const userCoords = { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude };
 
             const exifData = await new Promise((resolve, reject) => {
                 EXIF.getData(file, function() {
