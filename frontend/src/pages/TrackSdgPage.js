@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './TrackSdgPage.css';
+import { API_BASE_URL } from '../apiConfig';
 
 // --- Color function for the heat map based on the Eco-Score ---
 const getEcoScoreColor = (score) => {
@@ -47,7 +48,7 @@ export default function TrackSdgPage() {
         const fetchEcoScores = async () => {
             setLoading(true);
             try {
-                const response = await fetch('http://localhost:8000/api/eco-scores');
+                const response = await fetch(`${API_BASE_URL}/eco-scores`);
                 const data = await response.json();
                 setEcoScores(data);
             } catch (error) {

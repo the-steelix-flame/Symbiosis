@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AnalysisPage.css';
+import { API_BASE_URL } from '../apiConfig';
 
 const AnalysisPlaceholder = () => (
     <div className="analysis-result-placeholder">
@@ -19,7 +20,7 @@ export default function AnalysisPage() {
         setError('');
         setAnalysis('');
         try {
-            const response = await fetch('http://localhost:8000/api/analysis');
+            const response = await fetch(`${API_BASE_URL}/analysis`);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to fetch analysis from the server.');

@@ -1,13 +1,18 @@
 const admin = require('firebase-admin');
 
-// This line points to the key file you just downloaded and moved.
-const serviceAccount = require('../serviceAccountKey.json');
+// --- THIS IS THE NEW PART ---
+// Decode the Base64 service account key from environment variables
+const serviceAccountFromBase64 = Buffer.from(
+  process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64'
+).toString('ascii');
+const serviceAccount = JSON.parse(serviceAccountFromBase64);
+// --- END OF NEW PART ---
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
 
-// This db object is the Admin SDK's connection to Firestore.
 const db = admin.firestore();
-
-module.exports = { db };
+module.exports = { db, admin };

@@ -6,6 +6,7 @@ import EXIF from 'exif-js';
 import { getDistance } from 'geolib';
 import './EcoUploadsPage.css';
 
+
 // --- MAIN PAGE COMPONENT ---
 export default function EcoUploadsPage() {
     const { currentUser } = useAuth();

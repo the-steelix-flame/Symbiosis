@@ -3,22 +3,20 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyADzVWEzHlpIkOuhTV7-3CcilmlslPOr1Y",
-  authDomain: "ecosynth-hackathon.firebaseapp.com",
-  projectId: "ecosynth-hackathon",
-  storageBucket: "ecosynth-hackathon.firebasestorage.app",
-  messagingSenderId: "314791917034",
-  appId: "1:314791917034:web:47c5aae053aba796486e93"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-// Export all the services you need individually
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-
-// DO NOT add another export statement here. The ones above are sufficient.
+export { auth, db, storage };

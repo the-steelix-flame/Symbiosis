@@ -1,6 +1,7 @@
 import React from 'react';
 import './ThreatDashboard.css';
 
+
 // Helper component to format and display weather data
 const formatWeatherData = (weather) => {
     if (!weather) {
